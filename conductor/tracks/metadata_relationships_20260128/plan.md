@@ -9,7 +9,7 @@
     - [x] Write Unit Tests for the new Mapper methods.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Refined Domain Models & DTOs' (Protocol in workflow.md)
 
-## Phase 2: Relationship Linking Logic
+## Phase 2: Relationship Linking Logic [checkpoint: 9915d83]
 - [x] Task: Implement Entity Parsing [commit: 8b0da3a]
     - [x] Update `MetadataParserService` to parse `import_datasource_ref.txt` and entity files.
     - [x] Write Unit Tests for parsing these new file types.
