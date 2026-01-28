@@ -1,6 +1,6 @@
 # Implementation Plan - Track: Metadata Relationship Modeling & Navigation API
 
-## Phase 1: Refined Domain Models & DTOs
+## Phase 1: Refined Domain Models & DTOs [checkpoint: 7b7f143]
 - [x] Task: Define DataSource and Entity POJOs [commit: a3c195b]
     - [x] Create `ImportDataSource`, `NeImportEntity`, `CounterImportEntity`, `AttrImportEntity` POJOs.
     - [x] Update `MocDef` and `VendorMocDef` to include relationship fields (e.g., `List<CounterDef> counters`).
