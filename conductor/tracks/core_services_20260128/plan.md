@@ -14,12 +14,12 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Core Utility Services (File & Locking)
-- [ ] Task: Implement File Management Service
-    - [ ] Create `FileService` interface and implementation.
-    - [ ] Implement `resolveUserTempPath(user, timestamp)` method.
-    - [ ] Implement `atomicWrite(path, content)` method.
-    - [ ] Implement `validatePath(path)` for security.
-    - [ ] Write Unit Tests for path validation and atomic writes.
+- [x] Task: Implement File Management Service [commit: 4995c52]
+    - [x] Create `FileService` interface and implementation.
+    - [x] Implement `resolveUserTempPath(user, timestamp)` method.
+    - [x] Implement `atomicWrite(path, content)` method.
+    - [x] Implement `validatePath(path)` for security.
+    - [x] Write Unit Tests for path validation and atomic writes.
 - [ ] Task: Implement Locking Service
     - [ ] Define `Lock` domain model.
     - [ ] Create `LockService` to manage in-memory locks (ConcurrentHashMap).
