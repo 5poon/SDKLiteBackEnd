@@ -10,4 +10,8 @@ public class CounterDef {
     private String description;
     // Map to capture dynamic fields from CSV
     private Map<String, String> attributes;
+    
+    // Relationships
+    private String importEntityId; // Link to CounterImportEntity
+    private CounterImportEntity importEntity;
 }
