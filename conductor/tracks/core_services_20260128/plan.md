@@ -33,12 +33,12 @@
     - [x] Define `AdaptorInfo` DTO.
     - [x] Implement hierarchical directory traversal.
     - [x] Write Unit Tests with mock file system structure.
-- [ ] Task: Implement Adaptor Extraction
-    - [ ] Create `AdaptorExtractionService`.
-    - [ ] Implement `extractIar(path, destination)` using Apache Commons Compress.
-    - [ ] Integrate `LockService`: Ensure lock is acquired before extraction.
-    - [ ] Integrate `FileService`: Use secure path resolution.
-    - [ ] Write Integration Tests extracting a sample dummy `.iar` file.
+- [x] Task: Implement Adaptor Extraction [commit: d648405]
+    - [x] Create `AdaptorExtractionService`.
+    - [x] Implement `extractIar(path, destination)` using Apache Commons Compress.
+    - [x] Integrate `LockService`: Ensure lock is acquired before extraction.
+    - [x] Integrate `FileService`: Use secure path resolution.
+    - [x] Write Integration Tests extracting a sample dummy `.iar` file.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Adaptor Management & Extraction' (Protocol in workflow.md)
 
 ## Phase 4: Metadata Parsing & Transformation
