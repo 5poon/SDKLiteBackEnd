@@ -1,0 +1,55 @@
+# Implementation Plan - Track: Initial Core Services & Foundation
+
+## Phase 1: Project Skeleton & Security Infrastructure
+- [ ] Task: Initialize Spring Boot Project
+    - [ ] Create `pom.xml` with dependencies (Spring Web, Security, Lombok, Commons Compress, Commons CSV, MapStruct).
+    - [ ] Create main application class `SDKLiteBackEndApplication`.
+    - [ ] Configure `application.properties` (logging, server port).
+- [ ] Task: Implement File-Based Authentication
+    - [ ] Define `User` domain model (username, password hash, roles, quotas).
+    - [ ] Create `CustomUserDetailsService` to load users from a local JSON file.
+    - [ ] Configure `SecurityConfig` (SecurityFilterChain) to use the custom service and enable HTTP Basic or Form Login.
+    - [ ] Write Unit Tests for `CustomUserDetailsService` (Mock file reading).
+    - [ ] Write Integration Test for Login Endpoint.
+- [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
+
+## Phase 2: Core Utility Services (File & Locking)
+- [ ] Task: Implement File Management Service
+    - [ ] Create `FileService` interface and implementation.
+    - [ ] Implement `resolveUserTempPath(user, timestamp)` method.
+    - [ ] Implement `atomicWrite(path, content)` method.
+    - [ ] Implement `validatePath(path)` for security.
+    - [ ] Write Unit Tests for path validation and atomic writes.
+- [ ] Task: Implement Locking Service
+    - [ ] Define `Lock` domain model.
+    - [ ] Create `LockService` to manage in-memory locks (ConcurrentHashMap).
+    - [ ] Implement `acquireLock(adaptorId, userId)` and `releaseLock(adaptorId, userId)`.
+    - [ ] Write Unit Tests for concurrency scenarios (multiple users trying to acquire same lock).
+- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Utility Services (File & Locking)' (Protocol in workflow.md)
+
+## Phase 3: Adaptor Management & Extraction
+- [ ] Task: Implement Adaptor Listing
+    - [ ] Create `AdaptorDiscoveryService` to scan `example/adaptors`.
+    - [ ] Define `AdaptorInfo` DTO.
+    - [ ] Implement hierarchical directory traversal.
+    - [ ] Write Unit Tests with mock file system structure.
+- [ ] Task: Implement Adaptor Extraction
+    - [ ] Create `AdaptorExtractionService`.
+    - [ ] Implement `extractIar(path, destination)` using Apache Commons Compress.
+    - [ ] Integrate `LockService`: Ensure lock is acquired before extraction.
+    - [ ] Integrate `FileService`: Use secure path resolution.
+    - [ ] Write Integration Tests extracting a sample dummy `.iar` file.
+- [ ] Task: Conductor - User Manual Verification 'Phase 3: Adaptor Management & Extraction' (Protocol in workflow.md)
+
+## Phase 4: Metadata Parsing & Transformation
+- [ ] Task: Implement Metadata Parsing (Commons CSV)
+    - [ ] Define Domain POJOs for `CounterDef`, `MocDef`, etc.
+    - [ ] Create `MetadataParserService`.
+    - [ ] Implement generic parser for `*_ref.txt` files (handling headers and delimiters).
+    - [ ] Write Unit Tests for parsing sample CSV content.
+- [ ] Task: Implement Transformation Service (MapStruct)
+    - [ ] Define API DTOs (`CounterDefDTO`, `MocDefDTO`).
+    - [ ] Create MapStruct mappers (`MetadataMapper`).
+    - [ ] Implement `toDTO` and `toEntity` methods.
+    - [ ] Write Unit Tests to verify field mapping accuracy.
+- [ ] Task: Conductor - User Manual Verification 'Phase 4: Metadata Parsing & Transformation' (Protocol in workflow.md)
