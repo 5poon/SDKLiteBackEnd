@@ -13,13 +13,13 @@
 - [x] Task: Implement Entity Parsing [commit: 8b0da3a]
     - [x] Update `MetadataParserService` to parse `import_datasource_ref.txt` and entity files.
     - [x] Write Unit Tests for parsing these new file types.
-- [ ] Task: Implement Graph Builder Service
-    - [ ] Create `MetadataGraphService`.
-    - [ ] Implement method `buildGraph(parsedData)` to stitch objects together:
-        - [ ] Link Entities to DataSources.
-        - [ ] Link Counters/Attributes to VendorMOCs using mapping files (`import_*_for_ref.txt`).
-        - [ ] Link VendorMOCs to logical MOCs.
-    - [ ] Write Unit Tests verifying the graph integrity (e.g., asserting a MOC has the expected counters).
+- [x] Task: Implement Graph Builder Service [commit: e0b1def]
+    - [x] Create `MetadataGraphService`.
+    - [x] Implement method `buildGraph(parsedData)` to stitch objects together:
+        - [x] Link Entities to DataSources.
+        - [x] Link Counters/Attributes to VendorMOCs using mapping files (`import_*_for_ref.txt`).
+        - [x] Link VendorMOCs to logical MOCs.
+    - [x] Write Unit Tests verifying the graph integrity (e.g., asserting a MOC has the expected counters).
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Relationship Linking Logic' (Protocol in workflow.md)
 
 ## Phase 3: Navigation API
