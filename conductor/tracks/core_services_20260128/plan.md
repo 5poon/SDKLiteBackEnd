@@ -1,6 +1,6 @@
 # Implementation Plan - Track: Initial Core Services & Foundation
 
-## Phase 1: Project Skeleton & Security Infrastructure
+## Phase 1: Project Skeleton & Security Infrastructure [checkpoint: d8c6db9]
 - [x] Task: Initialize Spring Boot Project [commit: e959603]
     - [x] Create `pom.xml` with dependencies (Spring Web, Security, Lombok, Commons Compress, Commons CSV, MapStruct).
     - [x] Create main application class `SDKLiteBackEndApplication`.
