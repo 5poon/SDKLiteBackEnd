@@ -28,11 +28,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Utility Services (File & Locking)' (Protocol in workflow.md)
 
 ## Phase 3: Adaptor Management & Extraction
-- [ ] Task: Implement Adaptor Listing
-    - [ ] Create `AdaptorDiscoveryService` to scan `example/adaptors`.
-    - [ ] Define `AdaptorInfo` DTO.
-    - [ ] Implement hierarchical directory traversal.
-    - [ ] Write Unit Tests with mock file system structure.
+- [x] Task: Implement Adaptor Listing [commit: 6c244a6]
+    - [x] Create `AdaptorDiscoveryService` to scan `example/adaptors`.
+    - [x] Define `AdaptorInfo` DTO.
+    - [x] Implement hierarchical directory traversal.
+    - [x] Write Unit Tests with mock file system structure.
 - [ ] Task: Implement Adaptor Extraction
     - [ ] Create `AdaptorExtractionService`.
     - [ ] Implement `extractIar(path, destination)` using Apache Commons Compress.
