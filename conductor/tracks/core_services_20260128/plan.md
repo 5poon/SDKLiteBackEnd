@@ -47,9 +47,9 @@
     - [x] Create `MetadataParserService`.
     - [x] Implement generic parser for `*_ref.txt` files (handling headers and delimiters).
     - [x] Write Unit Tests for parsing sample CSV content.
-- [ ] Task: Implement Transformation Service (MapStruct)
-    - [ ] Define API DTOs (`CounterDefDTO`, `MocDefDTO`).
-    - [ ] Create MapStruct mappers (`MetadataMapper`).
-    - [ ] Implement `toDTO` and `toEntity` methods.
-    - [ ] Write Unit Tests to verify field mapping accuracy.
+- [x] Task: Implement Transformation Service (MapStruct) [commit: fe703b2]
+    - [x] Define API DTOs (`CounterDefDTO`, `MocDefDTO`).
+    - [x] Create MapStruct mappers (`MetadataMapper`).
+    - [x] Implement `toDTO` and `toEntity` methods.
+    - [x] Write Unit Tests to verify field mapping accuracy.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Metadata Parsing & Transformation' (Protocol in workflow.md)
