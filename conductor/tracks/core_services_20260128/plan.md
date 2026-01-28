@@ -11,7 +11,7 @@
     - [x] Configure `SecurityConfig` (SecurityFilterChain) to use the custom service and enable HTTP Basic or Form Login.
     - [x] Write Unit Tests for `CustomUserDetailsService` (Mock file reading).
     - [x] Write Integration Test for Login Endpoint.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Core Utility Services (File & Locking) [checkpoint: 3d0c018]
 - [x] Task: Implement File Management Service [commit: 4995c52]
@@ -25,9 +25,9 @@
     - [x] Create `LockService` to manage in-memory locks (ConcurrentHashMap).
     - [x] Implement `acquireLock(adaptorId, userId)` and `releaseLock(adaptorId, userId)`.
     - [x] Write Unit Tests for concurrency scenarios (multiple users trying to acquire same lock).
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Utility Services (File & Locking)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Core Utility Services (File & Locking)' (Protocol in workflow.md)
 
-## Phase 3: Adaptor Management & Extraction
+## Phase 3: Adaptor Management & Extraction [checkpoint: e54b269]
 - [x] Task: Implement Adaptor Listing [commit: 6c244a6]
     - [x] Create `AdaptorDiscoveryService` to scan `example/adaptors`.
     - [x] Define `AdaptorInfo` DTO.
@@ -39,9 +39,9 @@
     - [x] Integrate `LockService`: Ensure lock is acquired before extraction.
     - [x] Integrate `FileService`: Use secure path resolution.
     - [x] Write Integration Tests extracting a sample dummy `.iar` file.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Adaptor Management & Extraction' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Adaptor Management & Extraction' (Protocol in workflow.md)
 
-## Phase 4: Metadata Parsing & Transformation
+## Phase 4: Metadata Parsing & Transformation [checkpoint: dbc0dd6]
 - [x] Task: Implement Metadata Parsing (Commons CSV) [commit: f4da156]
     - [x] Define Domain POJOs for `CounterDef`, `MocDef`, etc.
     - [x] Create `MetadataParserService`.
@@ -52,4 +52,4 @@
     - [x] Create MapStruct mappers (`MetadataMapper`).
     - [x] Implement `toDTO` and `toEntity` methods.
     - [x] Write Unit Tests to verify field mapping accuracy.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Metadata Parsing & Transformation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Metadata Parsing & Transformation' (Protocol in workflow.md)

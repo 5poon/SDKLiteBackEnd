@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Initial Core Services & Foundation**
+- [x] **Track: Initial Core Services & Foundation**
   *Link: [./tracks/core_services_20260128/](./tracks/core_services_20260128/)*
