@@ -23,10 +23,10 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Relationship Linking Logic' (Protocol in workflow.md)
 
 ## Phase 3: Navigation API
-- [ ] Task: Implement Navigation Controller
-    - [ ] Create `MetadataController`.
-    - [ ] Implement `GET /api/v1/metadata/datasources` to return the source hierarchy.
-    - [ ] Implement `GET /api/v1/metadata/mocs/{id}` to return MOC details with linked data.
-    - [ ] Integrate `AdaptorExtractionService` (or a Session Service) to ensure data is loaded for the user.
-    - [ ] Write Integration Tests using `MockMvc` to verify JSON responses.
+- [x] Task: Implement Navigation Controller [commit: 3f81e6a]
+    - [x] Create `MetadataController`.
+    - [x] Implement `GET /api/v1/metadata/datasources` to return the source hierarchy.
+    - [x] Implement `GET /api/v1/metadata/mocs/{id}` to return MOC details with linked data.
+    - [x] Integrate `AdaptorExtractionService` (or a Session Service) to ensure data is loaded for the user.
+    - [x] Write Integration Tests using `MockMvc` to verify JSON responses.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Navigation API' (Protocol in workflow.md)
