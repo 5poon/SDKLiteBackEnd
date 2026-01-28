@@ -13,7 +13,7 @@
     - [x] Write Integration Test for Login Endpoint.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
 
-## Phase 2: Core Utility Services (File & Locking)
+## Phase 2: Core Utility Services (File & Locking) [checkpoint: 3d0c018]
 - [x] Task: Implement File Management Service [commit: 4995c52]
     - [x] Create `FileService` interface and implementation.
     - [x] Implement `resolveUserTempPath(user, timestamp)` method.
