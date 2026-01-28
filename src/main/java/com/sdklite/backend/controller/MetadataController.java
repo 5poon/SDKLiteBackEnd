@@ -2,6 +2,7 @@ package com.sdklite.backend.controller;
 
 import com.sdklite.backend.dto.CounterDefDTO;
 import com.sdklite.backend.dto.ImportDataSourceDTO;
+import com.sdklite.backend.dto.MocAttributeDefDTO;
 import com.sdklite.backend.dto.MocDefDTO;
 import com.sdklite.backend.mapper.MetadataMapper;
 import com.sdklite.backend.service.MetadataCrudService;
@@ -85,5 +86,36 @@ public class MetadataController {
         
         return metadataCrudService.deleteCounter(principal.getName(), timestamp, adaptorName, id)
                 .stream().map(metadataMapper::toDTO).collect(Collectors.toList());
+    }
+
+    @PostMapping("/attributes")
+    public void createAttribute(
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            @RequestBody MocAttributeDefDTO attributeDTO,
+            Principal principal) throws IOException {
+        
+        metadataCrudService.createAttribute(principal.getName(), timestamp, adaptorName, metadataMapper.toEntity(attributeDTO));
+    }
+
+    @PutMapping("/attributes/{id}")
+    public void updateAttribute(
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            @PathVariable String id,
+            @RequestBody MocAttributeDefDTO attributeDTO,
+            Principal principal) throws IOException {
+        
+        metadataCrudService.updateAttribute(principal.getName(), timestamp, adaptorName, id, metadataMapper.toEntity(attributeDTO));
+    }
+
+    @DeleteMapping("/attributes/{id}")
+    public void deleteAttribute(
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            @PathVariable String id,
+            Principal principal) throws IOException {
+        
+        metadataCrudService.deleteAttribute(principal.getName(), timestamp, adaptorName, id);
     }
 }
