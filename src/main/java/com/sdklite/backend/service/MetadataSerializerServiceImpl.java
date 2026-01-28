@@ -2,6 +2,7 @@ package com.sdklite.backend.service;
 
 import com.sdklite.backend.model.CounterDef;
 import com.sdklite.backend.model.MocDef;
+import com.sdklite.backend.model.MocAttributeDef;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
             return;
         }
 
-        // Use the attributes map keys from the first record as the canonical header order
         Set<String> headers = counters.get(0).getAttributes().keySet();
         CSVFormat format = getFormat(headers);
 
@@ -38,7 +38,6 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                 Map<String, String> attrs = counter.getAttributes();
                 List<String> values = new ArrayList<>();
                 for (String header : headers) {
-                    // Prioritize explicit fields if they might have changed
                     if ("id".equalsIgnoreCase(header)) {
                         values.add(counter.getId());
                     } else if ("name".equalsIgnoreCase(header)) {
@@ -68,6 +67,33 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                 for (String header : headers) {
                     if ("idf_moc_def".equalsIgnoreCase(header)) {
                         values.add(moc.getId());
+                    } else {
+                        values.add(attrs.get(header));
+                    }
+                }
+                printer.printRecord(values);
+            }
+        }
+    }
+
+    @Override
+    public void serializeAttributes(List<MocAttributeDef> attributes, Writer writer) throws IOException {
+        if (attributes == null || attributes.isEmpty()) {
+            return;
+        }
+
+        Set<String> headers = attributes.get(0).getAttributes().keySet();
+        CSVFormat format = getFormat(headers);
+
+        try (CSVPrinter printer = new CSVPrinter(writer, format)) {
+            for (MocAttributeDef attr : attributes) {
+                Map<String, String> attrs = attr.getAttributes();
+                List<String> values = new ArrayList<>();
+                for (String header : headers) {
+                    if ("id".equalsIgnoreCase(header)) {
+                        values.add(attr.getId());
+                    } else if ("name".equalsIgnoreCase(header)) {
+                        values.add(attr.getName());
                     } else {
                         values.add(attrs.get(header));
                     }

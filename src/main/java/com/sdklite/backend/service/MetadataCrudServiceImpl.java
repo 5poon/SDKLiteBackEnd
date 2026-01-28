@@ -1,6 +1,7 @@
 package com.sdklite.backend.service;
 
 import com.sdklite.backend.model.CounterDef;
+import com.sdklite.backend.model.MocAttributeDef;
 import com.sdklite.backend.security.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,16 +37,16 @@ public class MetadataCrudServiceImpl implements MetadataCrudService {
         this.objectMapper = objectMapper;
     }
 
-    private void enforceQuota(String username, int currentCount) throws IOException {
+    private void enforceQuota(String username, int currentCount, String type) throws IOException {
         List<User> users = objectMapper.readValue(new File(usersFilePath), new TypeReference<List<User>>(){});
         User user = users.stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Integer maxCounters = user.getQuotas().get("counters");
-        if (maxCounters != null && currentCount >= maxCounters) {
-            throw new IllegalStateException("Quota exceeded: Maximum counters allowed is " + maxCounters);
+        Integer max = user.getQuotas().get(type);
+        if (max != null && currentCount >= max) {
+            throw new IllegalStateException("Quota exceeded: Maximum " + type + " allowed is " + max);
         }
     }
 
@@ -60,10 +61,21 @@ public class MetadataCrudServiceImpl implements MetadataCrudService {
         }
     }
 
+    private List<MocAttributeDef> loadAttributes(String username, String timestamp, String adaptorName) throws IOException {
+        Path path = fileService.resolveUserTempPath(username, timestamp)
+                .resolve("config/metadata")
+                .resolve(adaptorName)
+                .resolve("moc_attribute_def_ref.txt");
+        
+        try (FileReader reader = new FileReader(path.toFile())) {
+            return parserService.parseAttributes(reader);
+        }
+    }
+
     @Override
     public List<CounterDef> createCounter(String username, String timestamp, String adaptorName, CounterDef newCounter) throws IOException {
         List<CounterDef> counters = loadCounters(username, timestamp, adaptorName);
-        enforceQuota(username, counters.size());
+        enforceQuota(username, counters.size(), "counters");
         
         counters.add(newCounter);
         workAreaService.saveCounters(username, timestamp, adaptorName, counters);
@@ -92,5 +104,36 @@ public class MetadataCrudServiceImpl implements MetadataCrudService {
             return counters;
         }
         throw new IllegalArgumentException("Counter not found: " + counterId);
+    }
+
+    @Override
+    public void createAttribute(String username, String timestamp, String adaptorName, MocAttributeDef newAttr) throws IOException {
+        List<MocAttributeDef> attrs = loadAttributes(username, timestamp, adaptorName);
+        enforceQuota(username, attrs.size(), "attributes");
+        attrs.add(newAttr);
+        workAreaService.saveAttributes(username, timestamp, adaptorName, attrs);
+    }
+
+    @Override
+    public void updateAttribute(String username, String timestamp, String adaptorName, String attrId, MocAttributeDef updatedAttr) throws IOException {
+        List<MocAttributeDef> attrs = loadAttributes(username, timestamp, adaptorName);
+        for (int i = 0; i < attrs.size(); i++) {
+            if (attrs.get(i).getId().equals(attrId)) {
+                attrs.set(i, updatedAttr);
+                workAreaService.saveAttributes(username, timestamp, adaptorName, attrs);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Attribute not found: " + attrId);
+    }
+
+    @Override
+    public void deleteAttribute(String username, String timestamp, String adaptorName, String attrId) throws IOException {
+        List<MocAttributeDef> attrs = loadAttributes(username, timestamp, adaptorName);
+        if (attrs.removeIf(a -> a.getId().equals(attrId))) {
+            workAreaService.saveAttributes(username, timestamp, adaptorName, attrs);
+        } else {
+            throw new IllegalArgumentException("Attribute not found: " + attrId);
+        }
     }
 }

@@ -160,4 +160,37 @@ public class MetadataParserServiceImpl implements MetadataParserService {
         }
         return list;
     }
+
+    @Override
+    public List<MocAttributeDef> parseAttributes(Reader reader) throws IOException {
+        List<MocAttributeDef> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                MocAttributeDef item = new MocAttributeDef();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setName(record.isMapped("name") ? record.get("name") : null);
+                
+                Map<String, String> attrs = new HashMap<>();
+                record.toMap().forEach(attrs::put);
+                item.setAttributes(attrs);
+                
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<ImportAttrFor> parseAttributeMappings(Reader reader) throws IOException {
+        List<ImportAttrFor> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                ImportAttrFor item = new ImportAttrFor();
+                item.setAttrImportId(record.isMapped("idf_attr_import") ? record.get("idf_attr_import") : null);
+                item.setVendorMocDefId(record.isMapped("idf_vendor_moc_def") ? record.get("idf_vendor_moc_def") : null);
+                list.add(item);
+            }
+        }
+        return list;
+    }
 }

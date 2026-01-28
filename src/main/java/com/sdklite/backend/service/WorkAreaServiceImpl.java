@@ -2,6 +2,7 @@ package com.sdklite.backend.service;
 
 import com.sdklite.backend.model.CounterDef;
 import com.sdklite.backend.model.MocDef;
+import com.sdklite.backend.model.MocAttributeDef;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,10 +38,22 @@ public class WorkAreaServiceImpl implements WorkAreaService {
         Path path = fileService.resolveUserTempPath(username, timestamp)
                 .resolve("config/metadata/nml")
                 .resolve(adaptorName)
-                .resolve("moc_def_ref.txt"); // Adjusting based on common pattern observed earlier
+                .resolve("moc_def_ref.txt");
         
         StringWriter writer = new StringWriter();
         serializerService.serializeMocs(mocs, writer);
+        fileService.atomicWrite(path, writer.toString());
+    }
+
+    @Override
+    public void saveAttributes(String username, String timestamp, String adaptorName, List<MocAttributeDef> attributes) throws IOException {
+        Path path = fileService.resolveUserTempPath(username, timestamp)
+                .resolve("config/metadata")
+                .resolve(adaptorName)
+                .resolve("moc_attribute_def_ref.txt");
+        
+        StringWriter writer = new StringWriter();
+        serializerService.serializeAttributes(attributes, writer);
         fileService.atomicWrite(path, writer.toString());
     }
 }

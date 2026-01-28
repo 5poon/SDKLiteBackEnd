@@ -16,4 +16,7 @@ public interface MetadataParserService {
     
     List<MocDefParent> parseMocParents(Reader reader) throws IOException;
     List<VendorMocDef> parseVendorMocs(Reader reader) throws IOException;
+    
+    List<MocAttributeDef> parseAttributes(Reader reader) throws IOException;
+    List<ImportAttrFor> parseAttributeMappings(Reader reader) throws IOException;
 }
