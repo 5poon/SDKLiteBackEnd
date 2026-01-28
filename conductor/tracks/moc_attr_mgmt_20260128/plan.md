@@ -1,13 +1,13 @@
 # Implementation Plan - Track: MOC Hierarchy & Attribute Management
 
 ## Phase 1: MOC Tree Building
-- [ ] Task: Implement MOC Hierarchy Logic
-    - [ ] Create `MocHierarchyService`.
-    - [ ] Implement `buildTree(List<MocDef> mocs, List<MocDefParent> parents)` logic.
-    - [ ] Link `VendorMocDef` to `MocDef`.
-- [ ] Task: Refactor Metadata Service
-    - [ ] Update `MetadataService.getDataSourceHierarchy` to be dynamic (remove hardcoded adaptor name).
-    - [ ] Implement `getMocHierarchy(username, timestamp, adaptorName)`.
+- [x] Task: Implement MOC Hierarchy Logic [commit: ede0f16]
+    - [x] Create `MocHierarchyService`.
+    - [x] Implement `buildTree(List<MocDef> mocs, List<MocDefParent> parents)` logic.
+    - [x] Link `VendorMocDef` to `MocDef`.
+- [x] Task: Refactor Metadata Service [commit: ede0f16]
+    - [x] Update `MetadataService.getDataSourceHierarchy` to be dynamic (remove hardcoded adaptor name).
+    - [x] Implement `getMocHierarchy(username, timestamp, adaptorName)`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: MOC Tree Building' (Protocol in workflow.md)
 
 ## Phase 2: Attribute Support & CRUD
