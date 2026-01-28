@@ -1,12 +1,12 @@
 # Implementation Plan - Track: Metadata Relationship Modeling & Navigation API
 
 ## Phase 1: Refined Domain Models & DTOs
-- [ ] Task: Define DataSource and Entity POJOs
-    - [ ] Create `ImportDataSource`, `NeImportEntity`, `CounterImportEntity`, `AttrImportEntity` POJOs.
-    - [ ] Update `MocDef` and `VendorMocDef` to include relationship fields (e.g., `List<CounterDef> counters`).
-    - [ ] Create corresponding DTOs for the API (`DataSourceDTO`, `ImportEntityDTO`).
-    - [ ] Update `MetadataMapper` to handle the new nested structures.
-    - [ ] Write Unit Tests for the new Mapper methods.
+- [x] Task: Define DataSource and Entity POJOs [commit: a3c195b]
+    - [x] Create `ImportDataSource`, `NeImportEntity`, `CounterImportEntity`, `AttrImportEntity` POJOs.
+    - [x] Update `MocDef` and `VendorMocDef` to include relationship fields (e.g., `List<CounterDef> counters`).
+    - [x] Create corresponding DTOs for the API (`DataSourceDTO`, `ImportEntityDTO`).
+    - [x] Update `MetadataMapper` to handle the new nested structures.
+    - [x] Write Unit Tests for the new Mapper methods.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Refined Domain Models & DTOs' (Protocol in workflow.md)
 
 ## Phase 2: Relationship Linking Logic
