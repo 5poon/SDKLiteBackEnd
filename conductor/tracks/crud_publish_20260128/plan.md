@@ -10,17 +10,10 @@
     - [x] Implement `save(username, timestamp, metadataType, entities)` method using `FileService.atomicWrite`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Serialization & User Work Area Persistence' (Protocol in workflow.md)
 
-## Phase 2: CRUD REST API & Quota Enforcement
-- [ ] Task: Implement CRUD Services
-    - [ ] Create `MetadataCrudService`.
-    - [ ] Implement logic to Load -> Modify -> Save for specific metadata types.
-- [ ] Task: Implement Quota Enforcement
-    - [ ] Add check in `MetadataCrudService` to retrieve current user quotas from the security context.
-    - [ ] Prevent "Create" operations if quota is exceeded.
-- [ ] Task: Create CRUD Controllers
-    - [ ] Implement `POST`, `PUT`, `DELETE` endpoints in `MetadataController`.
-    - [ ] Write Integration Tests verifying that file content changes after API calls.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: CRUD REST API & Quota Enforcement' (Protocol in workflow.md)
+## Phase 2: CRUD REST API & Quota Enforcement [checkpoint: 5abb29a]
+- [x] Task: Implement CRUD Services
+- [x] Task: Implement Quota Enforcement
+- [x] Task: Create CRUD Controllers
 
 ## Phase 3: Publish & Versioning
 - [ ] Task: Implement Repackaging Logic
