@@ -42,11 +42,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Adaptor Management & Extraction' (Protocol in workflow.md)
 
 ## Phase 4: Metadata Parsing & Transformation
-- [ ] Task: Implement Metadata Parsing (Commons CSV)
-    - [ ] Define Domain POJOs for `CounterDef`, `MocDef`, etc.
-    - [ ] Create `MetadataParserService`.
-    - [ ] Implement generic parser for `*_ref.txt` files (handling headers and delimiters).
-    - [ ] Write Unit Tests for parsing sample CSV content.
+- [x] Task: Implement Metadata Parsing (Commons CSV) [commit: f4da156]
+    - [x] Define Domain POJOs for `CounterDef`, `MocDef`, etc.
+    - [x] Create `MetadataParserService`.
+    - [x] Implement generic parser for `*_ref.txt` files (handling headers and delimiters).
+    - [x] Write Unit Tests for parsing sample CSV content.
 - [ ] Task: Implement Transformation Service (MapStruct)
     - [ ] Define API DTOs (`CounterDefDTO`, `MocDefDTO`).
     - [ ] Create MapStruct mappers (`MetadataMapper`).
