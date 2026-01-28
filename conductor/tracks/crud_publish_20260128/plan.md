@@ -1,10 +1,10 @@
 # Implementation Plan - Track: CRUD Operations & Publish Lifecycle
 
 ## Phase 1: Serialization & User Work Area Persistence
-- [ ] Task: Implement CSV Serialization
-    - [ ] Add CSV serialization logic to `MetadataParserService` (or create `MetadataSerializerService`).
-    - [ ] Implement `toCsv(List<T> entities)` for each metadata type.
-    - [ ] Write Unit Tests verifying the CSV output matches the original file format.
+- [x] Task: Implement CSV Serialization [commit: 0c11e46]
+    - [x] Add CSV serialization logic to `MetadataParserService` (or create `MetadataSerializerService`).
+    - [x] Implement `toCsv(List<T> entities)` for each metadata type.
+    - [x] Write Unit Tests verifying the CSV output matches the original file format.
 - [ ] Task: Implement Work Area Persistence
     - [ ] Create `WorkAreaService` to manage the lifecycle of the user's `user_temp` folder.
     - [ ] Implement `save(username, timestamp, metadataType, entities)` method using `FileService.atomicWrite`.
