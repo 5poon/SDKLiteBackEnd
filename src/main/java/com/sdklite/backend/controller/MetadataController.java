@@ -2,6 +2,7 @@ package com.sdklite.backend.controller;
 
 import com.sdklite.backend.dto.CounterDefDTO;
 import com.sdklite.backend.dto.ImportDataSourceDTO;
+import com.sdklite.backend.dto.MocDefDTO;
 import com.sdklite.backend.mapper.MetadataMapper;
 import com.sdklite.backend.service.MetadataCrudService;
 import com.sdklite.backend.service.MetadataService;
@@ -31,10 +32,23 @@ public class MetadataController {
     @GetMapping("/datasources")
     public List<ImportDataSourceDTO> getDataSourceHierarchy(
             @RequestParam String timestamp,
+            @RequestParam String adaptorName,
             Principal principal) {
         
         String username = principal.getName();
-        return metadataService.getDataSourceHierarchy(username, timestamp).stream()
+        return metadataService.getDataSourceHierarchy(username, timestamp, adaptorName).stream()
+                .map(metadataMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/mocs/tree")
+    public List<MocDefDTO> getMocHierarchy(
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        String username = principal.getName();
+        return metadataService.getMocHierarchy(username, timestamp, adaptorName).stream()
                 .map(metadataMapper::toDTO)
                 .collect(Collectors.toList());
     }

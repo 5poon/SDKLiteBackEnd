@@ -15,37 +15,52 @@ public class MetadataServiceImpl implements MetadataService {
     private final FileService fileService;
     private final MetadataParserService parserService;
     private final MetadataGraphService graphService;
+    private final MocHierarchyService mocHierarchyService;
 
     public MetadataServiceImpl(FileService fileService, 
                                MetadataParserService parserService, 
-                               MetadataGraphService graphService) {
+                               MetadataGraphService graphService,
+                               MocHierarchyService mocHierarchyService) {
         this.fileService = fileService;
         this.parserService = parserService;
         this.graphService = graphService;
+        this.mocHierarchyService = mocHierarchyService;
     }
 
     @Override
-    public List<ImportDataSource> getDataSourceHierarchy(String username, String timestamp) {
-        Path configPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata");
-        // For simplicity in this iteration, we assume we know where the files are based on the structure.
-        // In a real scenario, we'd scan for all *_ref.txt files.
-        // Let's assume a specific adaptor name for this proof of concept or scan logic.
+    public List<ImportDataSource> getDataSourceHierarchy(String username, String timestamp, String adaptorName) {
+        Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         
         try {
-            // Placeholder: In a real impl, we'd find the adaptor name directory
-            // For now, let's assume we are loading from the base metadata folder if it exists.
-            Path dsFile = configPath.resolve("nkia_gnodeb_csv_nr25r2/import_datasource_ref.txt");
-            if (!dsFile.toFile().exists()) return Collections.emptyList();
+            if (!metadataPath.toFile().exists()) return Collections.emptyList();
 
-            List<ImportDataSource> sources = parserService.parseDataSources(new FileReader(dsFile.toFile()));
-            List<NeImportEntity> neEntities = parserService.parseNeEntities(new FileReader(configPath.resolve("nkia_gnodeb_csv_nr25r2/ne_import_entity_ref.txt").toFile()));
-            List<CounterImportEntity> ceEntities = parserService.parseCounterEntities(new FileReader(configPath.resolve("nkia_gnodeb_csv_nr25r2/counter_import_entity_ref.txt").toFile()));
-            List<AttrImportEntity> aeEntities = parserService.parseAttrEntities(new FileReader(configPath.resolve("nkia_gnodeb_csv_nr25r2/attr_import_entity_ref.txt").toFile()));
+            List<ImportDataSource> sources = parserService.parseDataSources(new FileReader(metadataPath.resolve("import_datasource_ref.txt").toFile()));
+            List<NeImportEntity> neEntities = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
+            List<CounterImportEntity> ceEntities = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
+            List<AttrImportEntity> aeEntities = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
 
             return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load metadata hierarchy", e);
+        }
+    }
+
+    @Override
+    public List<MocDef> getMocHierarchy(String username, String timestamp, String adaptorName) {
+        Path nmlPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata/nml").resolve(adaptorName);
+        
+        try {
+            if (!nmlPath.toFile().exists()) return Collections.emptyList();
+
+            List<MocDef> mocs = parserService.parseMocs(new FileReader(nmlPath.resolve("moc_def_ref.txt").toFile()));
+            List<MocDefParent> parents = parserService.parseMocParents(new FileReader(nmlPath.resolve("moc_def_parent_ref.txt").toFile()));
+            List<VendorMocDef> vendorMocs = parserService.parseVendorMocs(new FileReader(nmlPath.resolve("vendor_moc_def_ref.txt").toFile()));
+
+            return mocHierarchyService.buildTree(mocs, parents, vendorMocs);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load MOC hierarchy", e);
         }
     }
 }

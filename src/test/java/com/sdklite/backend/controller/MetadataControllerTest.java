@@ -29,10 +29,12 @@ public class MetadataControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void getDataSourceHierarchy_ShouldReturnOk() throws Exception {
-        when(metadataService.getDataSourceHierarchy(anyString(), anyString()))
+        when(metadataService.getDataSourceHierarchy(anyString(), anyString(), anyString()))
                 .thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/api/v1/metadata/datasources").param("timestamp", "123"))
+        mockMvc.perform(get("/api/v1/metadata/datasources")
+                .param("timestamp", "123")
+                .param("adaptorName", "testAdaptor"))
                 .andExpect(status().isOk());
     }
 }

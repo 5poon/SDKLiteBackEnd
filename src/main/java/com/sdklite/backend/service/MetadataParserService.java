@@ -13,4 +13,7 @@ public interface MetadataParserService {
     List<NeImportEntity> parseNeEntities(Reader reader) throws IOException;
     List<CounterImportEntity> parseCounterEntities(Reader reader) throws IOException;
     List<AttrImportEntity> parseAttrEntities(Reader reader) throws IOException;
+    
+    List<MocDefParent> parseMocParents(Reader reader) throws IOException;
+    List<VendorMocDef> parseVendorMocs(Reader reader) throws IOException;
 }

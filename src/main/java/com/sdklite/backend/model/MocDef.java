@@ -14,4 +14,5 @@ public class MocDef {
     
     // Relationship
     private List<VendorMocDef> vendorMocDefs = new ArrayList<>();
+    private List<MocDef> children = new ArrayList<>();
 }
