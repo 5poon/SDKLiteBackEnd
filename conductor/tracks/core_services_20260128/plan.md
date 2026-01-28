@@ -5,12 +5,12 @@
     - [x] Create `pom.xml` with dependencies (Spring Web, Security, Lombok, Commons Compress, Commons CSV, MapStruct).
     - [x] Create main application class `SDKLiteBackEndApplication`.
     - [x] Configure `application.properties` (logging, server port).
-- [ ] Task: Implement File-Based Authentication
-    - [ ] Define `User` domain model (username, password hash, roles, quotas).
-    - [ ] Create `CustomUserDetailsService` to load users from a local JSON file.
-    - [ ] Configure `SecurityConfig` (SecurityFilterChain) to use the custom service and enable HTTP Basic or Form Login.
-    - [ ] Write Unit Tests for `CustomUserDetailsService` (Mock file reading).
-    - [ ] Write Integration Test for Login Endpoint.
+- [x] Task: Implement File-Based Authentication [commit: 5ca6c77]
+    - [x] Define `User` domain model (username, password hash, roles, quotas).
+    - [x] Create `CustomUserDetailsService` to load users from a local JSON file.
+    - [x] Configure `SecurityConfig` (SecurityFilterChain) to use the custom service and enable HTTP Basic or Form Login.
+    - [x] Write Unit Tests for `CustomUserDetailsService` (Mock file reading).
+    - [x] Write Integration Test for Login Endpoint.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Project Skeleton & Security Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Core Utility Services (File & Locking)
