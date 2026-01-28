@@ -10,9 +10,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Refined Domain Models & DTOs' (Protocol in workflow.md)
 
 ## Phase 2: Relationship Linking Logic
-- [ ] Task: Implement Entity Parsing
-    - [ ] Update `MetadataParserService` to parse `import_datasource_ref.txt` and entity files.
-    - [ ] Write Unit Tests for parsing these new file types.
+- [x] Task: Implement Entity Parsing [commit: 8b0da3a]
+    - [x] Update `MetadataParserService` to parse `import_datasource_ref.txt` and entity files.
+    - [x] Write Unit Tests for parsing these new file types.
 - [ ] Task: Implement Graph Builder Service
     - [ ] Create `MetadataGraphService`.
     - [ ] Implement method `buildGraph(parsedData)` to stitch objects together:
