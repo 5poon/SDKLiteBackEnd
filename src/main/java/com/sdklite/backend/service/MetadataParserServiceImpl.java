@@ -1,7 +1,6 @@
 package com.sdklite.backend.service;
 
-import com.sdklite.backend.model.CounterDef;
-import com.sdklite.backend.model.MocDef;
+import com.sdklite.backend.model.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -17,17 +16,19 @@ import java.util.Map;
 @Service
 public class MetadataParserServiceImpl implements MetadataParserService {
 
-    @Override
-    public List<CounterDef> parseCounters(Reader reader) throws IOException {
-        List<CounterDef> counters = new ArrayList<>();
-        CSVFormat format = CSVFormat.DEFAULT.builder()
+    private CSVFormat getFormat() {
+        return CSVFormat.DEFAULT.builder()
                 .setHeader()
                 .setSkipHeaderRecord(true)
                 .setIgnoreHeaderCase(true)
                 .setTrim(true)
                 .build();
+    }
 
-        try (CSVParser parser = new CSVParser(reader, format)) {
+    @Override
+    public List<CounterDef> parseCounters(Reader reader) throws IOException {
+        List<CounterDef> counters = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
             for (CSVRecord record : parser) {
                 CounterDef def = new CounterDef();
                 def.setId(record.isMapped("id") ? record.get("id") : null);
@@ -46,20 +47,10 @@ public class MetadataParserServiceImpl implements MetadataParserService {
     @Override
     public List<MocDef> parseMocs(Reader reader) throws IOException {
         List<MocDef> mocs = new ArrayList<>();
-        CSVFormat format = CSVFormat.DEFAULT.builder()
-                .setHeader()
-                .setSkipHeaderRecord(true)
-                .setIgnoreHeaderCase(true)
-                .setTrim(true)
-                .build();
-
-        try (CSVParser parser = new CSVParser(reader, format)) {
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
             for (CSVRecord record : parser) {
                 MocDef def = new MocDef();
                 def.setId(record.isMapped("idf_moc_def") ? record.get("idf_moc_def") : null);
-                // Assuming mapping based on sample file: idf_moc_def1 might be parent or child logic, 
-                // keeping it generic for now as per requirement to just parse.
-                // relationships will be built in logic layer, here we just load raw data.
                 
                 Map<String, String> attrs = new HashMap<>();
                 record.toMap().forEach(attrs::put);
@@ -69,5 +60,74 @@ public class MetadataParserServiceImpl implements MetadataParserService {
             }
         }
         return mocs;
+    }
+
+    @Override
+    public List<ImportDataSource> parseDataSources(Reader reader) throws IOException {
+        List<ImportDataSource> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                ImportDataSource item = new ImportDataSource();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setName(record.isMapped("name") ? record.get("name") : null);
+                item.setBeanClass(record.isMapped("bean_class") ? record.get("bean_class") : null);
+                item.setConnectionString(record.isMapped("connection_string") ? record.get("connection_string") : null);
+                item.setActive(record.isMapped("is_active") && "1".equals(record.get("is_active")));
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<NeImportEntity> parseNeEntities(Reader reader) throws IOException {
+        List<NeImportEntity> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                NeImportEntity item = new NeImportEntity();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setDataSourceId(record.isMapped("idf_import_datasource") ? record.get("idf_import_datasource") : null);
+                item.setEntityName(record.isMapped("entity_name") ? record.get("entity_name") : null);
+                item.setConnectionString(record.isMapped("connection_string") ? record.get("connection_string") : null);
+                item.setActive(record.isMapped("is_active") && "1".equals(record.get("is_active")));
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<CounterImportEntity> parseCounterEntities(Reader reader) throws IOException {
+        List<CounterImportEntity> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                CounterImportEntity item = new CounterImportEntity();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setDataSourceId(record.isMapped("idf_import_datasource") ? record.get("idf_import_datasource") : null);
+                item.setNeListSelectorId(record.isMapped("idf_ne_list_selector") ? record.get("idf_ne_list_selector") : null);
+                item.setEntityName(record.isMapped("entity_name") ? record.get("entity_name") : null);
+                item.setConnectionString(record.isMapped("connection_string") ? record.get("connection_string") : null);
+                item.setActive(record.isMapped("is_active") && "1".equals(record.get("is_active")));
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<AttrImportEntity> parseAttrEntities(Reader reader) throws IOException {
+        List<AttrImportEntity> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                AttrImportEntity item = new AttrImportEntity();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setDataSourceId(record.isMapped("idf_import_datasource") ? record.get("idf_import_datasource") : null);
+                item.setEntityName(record.isMapped("entity_name") ? record.get("entity_name") : null);
+                item.setConnectionString(record.isMapped("connection_string") ? record.get("connection_string") : null);
+                item.setActive(record.isMapped("is_active") && "1".equals(record.get("is_active")));
+                list.add(item);
+            }
+        }
+        return list;
     }
 }
