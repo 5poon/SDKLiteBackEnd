@@ -15,8 +15,8 @@
 - [x] Task: Implement Attribute CRUD
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Attribute Support & CRUD' (Protocol in workflow.md)
 
-## Phase 3: Controller Expansion
-- [ ] Task: Implement MOC & Attribute Endpoints
+## Phase 3: Controller Expansion [checkpoint: a4e14b4]
+- [x] Task: Implement MOC & Attribute Endpoints
     - [ ] Add `GET /api/v1/metadata/mocs/tree` to `MetadataController`.
     - [ ] Add Attribute CRUD endpoints.
     - [ ] Write Integration Tests.
