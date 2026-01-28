@@ -22,7 +22,7 @@
     - [x] Write Unit Tests verifying the graph integrity (e.g., asserting a MOC has the expected counters).
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Relationship Linking Logic' (Protocol in workflow.md)
 
-## Phase 3: Navigation API
+## Phase 3: Navigation API [checkpoint: 46212e7]
 - [x] Task: Implement Navigation Controller [commit: 3f81e6a]
     - [x] Create `MetadataController`.
     - [x] Implement `GET /api/v1/metadata/datasources` to return the source hierarchy.
