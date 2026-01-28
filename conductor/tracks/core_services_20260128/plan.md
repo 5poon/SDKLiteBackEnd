@@ -20,11 +20,11 @@
     - [x] Implement `atomicWrite(path, content)` method.
     - [x] Implement `validatePath(path)` for security.
     - [x] Write Unit Tests for path validation and atomic writes.
-- [ ] Task: Implement Locking Service
-    - [ ] Define `Lock` domain model.
-    - [ ] Create `LockService` to manage in-memory locks (ConcurrentHashMap).
-    - [ ] Implement `acquireLock(adaptorId, userId)` and `releaseLock(adaptorId, userId)`.
-    - [ ] Write Unit Tests for concurrency scenarios (multiple users trying to acquire same lock).
+- [x] Task: Implement Locking Service [commit: 2678b0f]
+    - [x] Define `Lock` domain model.
+    - [x] Create `LockService` to manage in-memory locks (ConcurrentHashMap).
+    - [x] Implement `acquireLock(adaptorId, userId)` and `releaseLock(adaptorId, userId)`.
+    - [x] Write Unit Tests for concurrency scenarios (multiple users trying to acquire same lock).
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Utility Services (File & Locking)' (Protocol in workflow.md)
 
 ## Phase 3: Adaptor Management & Extraction
