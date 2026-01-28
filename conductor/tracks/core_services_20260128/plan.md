@@ -1,10 +1,10 @@
 # Implementation Plan - Track: Initial Core Services & Foundation
 
 ## Phase 1: Project Skeleton & Security Infrastructure
-- [ ] Task: Initialize Spring Boot Project
-    - [ ] Create `pom.xml` with dependencies (Spring Web, Security, Lombok, Commons Compress, Commons CSV, MapStruct).
-    - [ ] Create main application class `SDKLiteBackEndApplication`.
-    - [ ] Configure `application.properties` (logging, server port).
+- [x] Task: Initialize Spring Boot Project [commit: e959603]
+    - [x] Create `pom.xml` with dependencies (Spring Web, Security, Lombok, Commons Compress, Commons CSV, MapStruct).
+    - [x] Create main application class `SDKLiteBackEndApplication`.
+    - [x] Configure `application.properties` (logging, server port).
 - [ ] Task: Implement File-Based Authentication
     - [ ] Define `User` domain model (username, password hash, roles, quotas).
     - [ ] Create `CustomUserDetailsService` to load users from a local JSON file.
