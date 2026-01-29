@@ -33,33 +33,49 @@ public class MetadataController {
     }
 
     @GetMapping("/datasources")
-    @Operation(summary = "Get Data Source Hierarchy", description = "Returns the DataSource -> Entity nested hierarchy for a specific adaptor.")
+    @Operation(summary = "List Data Sources", description = "Returns DataSources with configurable depth (1: root only, 2: with entities, 3: full).")
     public List<ImportDataSourceDTO> getDataSourceHierarchy(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
+            @Parameter(description = "Nesting depth (1-3)") @RequestParam(defaultValue = "3") int depth,
             Principal principal) {
         
         String username = principal.getName();
-        return metadataService.getDataSourceHierarchy(username, timestamp, adaptorName).stream()
+        return metadataService.getDataSourceHierarchy(username, timestamp, adaptorName, depth).stream()
                 .map(metadataMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/datasources/{id}")
+    @Operation(summary = "Get Data Source by ID", description = "Returns a specific DataSource with configurable depth.")
+    public ImportDataSourceDTO getDataSourceById(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            @RequestParam(defaultValue = "3") int depth,
+            Principal principal) {
+        
+        return metadataService.getDataSourceById(principal.getName(), timestamp, adaptorName, id, depth)
+                .map(metadataMapper::toDTO)
+                .orElseThrow(() -> new IllegalArgumentException("DataSource not found: " + id));
+    }
+
     @GetMapping("/mocs/tree")
-    @Operation(summary = "Get MOC Tree", description = "Returns the recursive hierarchy of Managed Object Classes (MOCs).")
+    @Operation(summary = "Get MOC Tree", description = "Returns the recursive hierarchy of Managed Object Classes (MOCs). Depth 3 includes counters/attributes.")
     public List<MocDefDTO> getMocHierarchy(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
+            @Parameter(description = "Nesting depth (1-3)") @RequestParam(defaultValue = "3") int depth,
             Principal principal) {
         
         String username = principal.getName();
-        return metadataService.getMocHierarchy(username, timestamp, adaptorName).stream()
+        return metadataService.getMocHierarchy(username, timestamp, adaptorName, depth).stream()
                 .map(metadataMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/context")
-    @Operation(summary = "Get Full Project Context", description = "Bootstrap endpoint returning all metadata (sources, entities, mocs, counters, attributes) in one payload.")
+    @Operation(summary = "Get Full Project Context", description = "Bootstrap endpoint returning all metadata in one payload.")
     public ProjectContextDTO getProjectContext(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,

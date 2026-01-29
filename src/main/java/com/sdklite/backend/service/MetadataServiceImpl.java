@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,21 +35,34 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<ImportDataSource> getDataSourceHierarchy(String username, String timestamp, String adaptorName) {
+    public List<ImportDataSource> getDataSourceHierarchy(String username, String timestamp, String adaptorName, int depth) {
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         
         try {
             if (!metadataPath.toFile().exists()) return Collections.emptyList();
 
             List<ImportDataSource> sources = parserService.parseDataSources(new FileReader(metadataPath.resolve("import_datasource_ref.txt").toFile()));
-            List<NeImportEntity> neEntities = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
-            List<CounterImportEntity> ceEntities = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
-            List<AttrImportEntity> aeEntities = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
-            List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
-            List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
-            List<CounterDefGran> granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
+            
+            List<NeImportEntity> neEntities = Collections.emptyList();
+            List<CounterImportEntity> ceEntities = Collections.emptyList();
+            List<AttrImportEntity> aeEntities = Collections.emptyList();
+            List<CounterDef> counters = Collections.emptyList();
+            List<MocAttributeDef> attributes = Collections.emptyList();
+            List<CounterDefGran> granularities = Collections.emptyList();
 
-            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities, counters, attributes, granularities);
+            if (depth >= 2) {
+                neEntities = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
+                ceEntities = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
+                aeEntities = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
+            }
+
+            if (depth >= 3) {
+                counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
+                attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
+                granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
+            }
+
+            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities, counters, attributes, granularities, depth);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load metadata hierarchy", e);
@@ -56,7 +70,14 @@ public class MetadataServiceImpl implements MetadataService {
     }
 
     @Override
-    public List<MocDef> getMocHierarchy(String username, String timestamp, String adaptorName) {
+    public Optional<ImportDataSource> getDataSourceById(String username, String timestamp, String adaptorName, String id, int depth) {
+        return getDataSourceHierarchy(username, timestamp, adaptorName, depth).stream()
+                .filter(ds -> ds.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
+    public List<MocDef> getMocHierarchy(String username, String timestamp, String adaptorName, int depth) {
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         Path nmlPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata/nml").resolve(adaptorName);
         
@@ -67,11 +88,19 @@ public class MetadataServiceImpl implements MetadataService {
             List<MocDefParent> parents = parserService.parseMocParents(new FileReader(nmlPath.resolve("moc_def_parent_ref.txt").toFile()));
             List<VendorMocDef> vendorMocs = parserService.parseVendorMocs(new FileReader(nmlPath.resolve("vendor_moc_def_ref.txt").toFile()));
             
-            List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
-            List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
-            List<ImportCounterFor> counterMappings = parserService.parseCounterMappings(new FileReader(metadataPath.resolve("import_counter_for_ref.txt").toFile()));
-            List<ImportAttrFor> attributeMappings = parserService.parseAttributeMappings(new FileReader(metadataPath.resolve("import_attr_for_ref.txt").toFile()));
-            List<CounterDefGran> granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
+            List<CounterDef> counters = Collections.emptyList();
+            List<MocAttributeDef> attributes = Collections.emptyList();
+            List<ImportCounterFor> counterMappings = Collections.emptyList();
+            List<ImportAttrFor> attributeMappings = Collections.emptyList();
+            List<CounterDefGran> granularities = Collections.emptyList();
+
+            if (depth >= 3) {
+                counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
+                attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
+                counterMappings = parserService.parseCounterMappings(new FileReader(metadataPath.resolve("import_counter_for_ref.txt").toFile()));
+                attributeMappings = parserService.parseAttributeMappings(new FileReader(metadataPath.resolve("import_attr_for_ref.txt").toFile()));
+                granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
+            }
 
             return mocHierarchyService.buildTree(mocs, parents, vendorMocs, counters, attributes, counterMappings, attributeMappings, granularities);
 
@@ -84,10 +113,11 @@ public class MetadataServiceImpl implements MetadataService {
     public ProjectContextDTO getProjectContext(String username, String timestamp, String adaptorName) {
         ProjectContextDTO context = new ProjectContextDTO();
         
-        List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName);
+        // Context by default returns everything (depth 3)
+        List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName, 3);
         context.setDataSources(dataSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
-        List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName);
+        List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName, 3);
         context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
