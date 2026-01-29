@@ -4,6 +4,7 @@ import com.sdklite.backend.dto.CounterDefDTO;
 import com.sdklite.backend.dto.ImportDataSourceDTO;
 import com.sdklite.backend.dto.MocAttributeDefDTO;
 import com.sdklite.backend.dto.MocDefDTO;
+import com.sdklite.backend.dto.ProjectContextDTO;
 import com.sdklite.backend.mapper.MetadataMapper;
 import com.sdklite.backend.service.MetadataCrudService;
 import com.sdklite.backend.service.MetadataService;
@@ -52,6 +53,16 @@ public class MetadataController {
         return metadataService.getMocHierarchy(username, timestamp, adaptorName).stream()
                 .map(metadataMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/context")
+    public ProjectContextDTO getProjectContext(
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        String username = principal.getName();
+        return metadataService.getProjectContext(username, timestamp, adaptorName);
     }
 
     @PostMapping("/counters")
