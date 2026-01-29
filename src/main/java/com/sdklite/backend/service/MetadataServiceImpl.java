@@ -20,18 +20,70 @@ public class MetadataServiceImpl implements MetadataService {
     private final MetadataParserService parserService;
     private final MetadataGraphService graphService;
     private final MocHierarchyService mocHierarchyService;
-    private final MetadataMapper metadataMapper;
+        private final MetadataMapper metadataMapper;
+        private final LockService lockService;
+        private final SessionService sessionService;
+    private final IarPackagerService packagerService;
+    private final VersioningService versioningService;
+    
+    @org.springframework.beans.factory.annotation.Value("${app.adaptor.base-path}")
+    private String adaptorBasePath;
 
     public MetadataServiceImpl(FileService fileService, 
                                MetadataParserService parserService, 
                                MetadataGraphService graphService,
                                MocHierarchyService mocHierarchyService,
-                               MetadataMapper metadataMapper) {
+                               MetadataMapper metadataMapper,
+                               LockService lockService,
+                               SessionService sessionService,
+                               IarPackagerService packagerService,
+                               VersioningService versioningService) {
         this.fileService = fileService;
         this.parserService = parserService;
         this.graphService = graphService;
         this.mocHierarchyService = mocHierarchyService;
         this.metadataMapper = metadataMapper;
+        this.lockService = lockService;
+        this.sessionService = sessionService;
+        this.packagerService = packagerService;
+        this.versioningService = versioningService;
+    }
+
+    @Override
+    public void publishAdaptor(String username, String timestamp, String adaptorName, String vendor, String technology, String newVersion) throws IOException {
+        String lockId = String.join("/", vendor, technology, adaptorName, "latest");
+        
+        // 1. Verify lock
+        lockService.checkLock(lockId).ifPresent(lock -> {
+            if (!lock.getUsername().equals(username)) {
+                throw new SecurityException("User does not hold the lock for this adaptor");
+            }
+        });
+
+        Path workArea = fileService.resolveUserTempPath(username, timestamp);
+        Path configDir = workArea.resolve("config");
+        
+        // 2. Package to temporary IAR
+        Path tempIar = workArea.resolve(adaptorName + ".iar");
+        packagerService.packageConfig(configDir, tempIar);
+
+        // 3. Create target directory
+        Path targetDir = java.nio.file.Paths.get(adaptorBasePath, vendor, technology, adaptorName, newVersion);
+        if (targetDir.toFile().exists()) {
+            throw new IllegalStateException("Version " + newVersion + " already exists");
+        }
+        java.nio.file.Files.createDirectories(targetDir);
+
+        // 4. Move IAR to final location
+        java.nio.file.Files.move(tempIar, targetDir.resolve(adaptorName + ".iar"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+        // 5. Cleanup session
+        sessionService.closeSession(username, timestamp, lockId);
+    }
+
+    @Override
+    public String suggestNextVersion(String vendor, String technology, String adaptorName) {
+        return versioningService.suggestNextVersion(vendor, technology, adaptorName);
     }
 
     @Override

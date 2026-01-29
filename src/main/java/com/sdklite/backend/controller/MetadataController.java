@@ -220,4 +220,30 @@ public class MetadataController {
         
         metadataCrudService.deleteAttribute(principal.getName(), timestamp, adaptorName, id);
     }
+
+    @PostMapping("/publish")
+    @Operation(summary = "Publish Adaptor", description = "Packages changes into a new versioned IAR and cleans up the session.")
+    public void publishAdaptor(
+            @Valid @RequestBody PublishRequest request,
+            Principal principal) throws IOException {
+        
+        metadataService.publishAdaptor(
+                principal.getName(), 
+                request.getTimestamp(), 
+                request.getAdaptorName(), 
+                request.getVendor(), 
+                request.getTechnology(), 
+                request.getNewVersion()
+        );
+    }
+
+    @GetMapping("/suggest-version")
+    @Operation(summary = "Suggest Next Version", description = "Scans the global repository and suggests the next version string.")
+    public String suggestNextVersion(
+            @RequestParam String vendor,
+            @RequestParam String technology,
+            @RequestParam String adaptorName) {
+        
+        return metadataService.suggestNextVersion(vendor, technology, adaptorName);
+    }
 }
