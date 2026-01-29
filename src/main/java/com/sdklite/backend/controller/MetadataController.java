@@ -1,13 +1,12 @@
 package com.sdklite.backend.controller;
 
-import com.sdklite.backend.dto.CounterDefDTO;
-import com.sdklite.backend.dto.ImportDataSourceDTO;
-import com.sdklite.backend.dto.MocAttributeDefDTO;
-import com.sdklite.backend.dto.MocDefDTO;
-import com.sdklite.backend.dto.ProjectContextDTO;
+import com.sdklite.backend.dto.*;
 import com.sdklite.backend.mapper.MetadataMapper;
 import com.sdklite.backend.service.MetadataCrudService;
 import com.sdklite.backend.service.MetadataService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/metadata")
+@Tag(name = "Metadata", description = "Operations for adaptor metadata and hierarchies")
 public class MetadataController {
 
     private final MetadataService metadataService;
@@ -32,9 +32,10 @@ public class MetadataController {
     }
 
     @GetMapping("/datasources")
+    @Operation(summary = "Get Data Source Hierarchy", description = "Returns the DataSource -> Entity nested hierarchy for a specific adaptor.")
     public List<ImportDataSourceDTO> getDataSourceHierarchy(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             Principal principal) {
         
         String username = principal.getName();
@@ -44,9 +45,10 @@ public class MetadataController {
     }
 
     @GetMapping("/mocs/tree")
+    @Operation(summary = "Get MOC Tree", description = "Returns the recursive hierarchy of Managed Object Classes (MOCs).")
     public List<MocDefDTO> getMocHierarchy(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             Principal principal) {
         
         String username = principal.getName();
@@ -56,9 +58,10 @@ public class MetadataController {
     }
 
     @GetMapping("/context")
+    @Operation(summary = "Get Full Project Context", description = "Bootstrap endpoint returning all metadata (sources, entities, mocs, counters, attributes) in one payload.")
     public ProjectContextDTO getProjectContext(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             Principal principal) {
         
         String username = principal.getName();
@@ -66,9 +69,10 @@ public class MetadataController {
     }
 
     @PostMapping("/counters")
+    @Operation(summary = "Create Counter", description = "Adds a new counter definition to the work area.")
     public List<CounterDefDTO> createCounter(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @RequestBody CounterDefDTO counterDTO,
             Principal principal) throws IOException {
         
@@ -77,9 +81,10 @@ public class MetadataController {
     }
 
     @PutMapping("/counters/{id}")
+    @Operation(summary = "Update Counter", description = "Updates an existing counter definition.")
     public List<CounterDefDTO> updateCounter(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
             @RequestBody CounterDefDTO counterDTO,
             Principal principal) throws IOException {
@@ -89,9 +94,10 @@ public class MetadataController {
     }
 
     @DeleteMapping("/counters/{id}")
+    @Operation(summary = "Delete Counter", description = "Removes a counter definition.")
     public List<CounterDefDTO> deleteCounter(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
             Principal principal) throws IOException {
         
@@ -100,9 +106,10 @@ public class MetadataController {
     }
 
     @PostMapping("/attributes")
+    @Operation(summary = "Create Attribute", description = "Adds a new attribute definition.")
     public void createAttribute(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @RequestBody MocAttributeDefDTO attributeDTO,
             Principal principal) throws IOException {
         
@@ -110,9 +117,10 @@ public class MetadataController {
     }
 
     @PutMapping("/attributes/{id}")
+    @Operation(summary = "Update Attribute", description = "Updates an existing attribute definition.")
     public void updateAttribute(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
             @RequestBody MocAttributeDefDTO attributeDTO,
             Principal principal) throws IOException {
@@ -121,9 +129,10 @@ public class MetadataController {
     }
 
     @DeleteMapping("/attributes/{id}")
+    @Operation(summary = "Delete Attribute", description = "Removes an attribute definition.")
     public void deleteAttribute(
-            @RequestParam String timestamp,
-            @RequestParam String adaptorName,
+            @Parameter(description = "Session timestamp") @RequestParam String timestamp,
+            @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
             Principal principal) throws IOException {
         
