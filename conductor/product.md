@@ -38,6 +38,11 @@ SDKLiteBackEnd is a Maven-based Spring Boot application designed to serve as a r
     - When a CRUD request is received and processed, the backend will update the relevant files directly within the user-specific directory: `example/user_temp/<username>/<timestamp>/config/`.
 - **Unified Project Context API:**
     - Provide a high-performance "Bootstrap" API endpoint that returns the complete metadata state (DataSources, Entities, MOCs, Counters, and Attributes) in a single unified JSON payload, optimizing frontend initialization.
+- **Session Management & Automated Cleanup:**
+    - **Explicit Session Closure:** Provide an API endpoint to explicitly release adaptor locks and delete temporary workspaces when a user finishes their session.
+    - **Background Cleanup:** Implement a scheduled service to automatically purge stale temporary directories based on a configurable TTL (Time-To-Live), ensuring efficient disk space usage.
+- **Interactive API Documentation:**
+    - Integrated Swagger UI (OpenAPI) to provide developers with a real-time, interactive interface for exploring and testing all backend service endpoints.
 - **Publish & Repackaging:**
     - **Save:** Intermediate saves update the files in the temporary directory.
     - **Publish:** Upon a user request to "Publish," the backend will take the current state of the `config` directory from `example/user_temp/<username>/<timestamp>/`.
