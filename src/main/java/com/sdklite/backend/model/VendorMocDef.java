@@ -8,11 +8,13 @@ import java.util.Map;
 @Data
 public class VendorMocDef {
     private String id;
-    private String mocDefId; // Link to logical MocDef
-    private String vendorId;
+    private String mocDefId; // idf_moc_def
+    private String vendorId; // idf_vendor
     private String name;
+    private Integer behaviour;
+    private String iconFilename;
+    private String rsComment;
     
     // Relationships
     private List<CounterDef> counters = new ArrayList<>();
-    // private List<MocAttributeDef> attributes = new ArrayList<>(); // To be added later
 }

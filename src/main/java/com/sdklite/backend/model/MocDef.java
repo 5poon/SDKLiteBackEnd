@@ -10,9 +10,13 @@ public class MocDef {
     private String id;
     private String name;
     private String parentId;
+    private Integer behaviour;
+    private Integer flags;
+    private String iconFilename;
+    private String rsComment;
     private Map<String, String> attributes;
     
-    // Relationship
+    // Relationships
     private List<VendorMocDef> vendorMocDefs = new ArrayList<>();
     private List<MocDef> children = new ArrayList<>();
 }
