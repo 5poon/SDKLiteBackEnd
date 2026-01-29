@@ -1,14 +1,18 @@
 package com.sdklite.backend.model;
 
 import lombok.Data;
-import java.util.Map;
 
 @Data
 public class NeImportEntity {
     private String id;
-    private String dataSourceId;
-    private String entityName;
+    private String dynImportKeyMgrId; // idf_dyn_import_key_mgr
+    private String dataSourceId;      // idf_import_datasource
+    private String beanClass;
     private String connectionString;
+    private String entityName;
+    private Integer importPriority;
     private boolean isActive;
-    // ... other fields from CSV if needed
+    private String lastImportDate;
+    private Long lastImportLineCount;
+    private Integer thresholdReliabilityPercent;
 }

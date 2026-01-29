@@ -5,9 +5,15 @@ import lombok.Data;
 @Data
 public class CounterImportEntity {
     private String id;
-    private String dataSourceId;
-    private String neListSelectorId; // Optional relationship
-    private String entityName;
+    private String dynImportKeyMgrId; // idf_dyn_import_key_mgr
+    private String dataSourceId;      // idf_import_datasource
+    private String neListSelectorId;  // idf_ne_list_selector
+    private String beanClass;
     private String connectionString;
+    private String entityName;
     private boolean isActive;
+    private String lastImportDate;
+    private Long lastImportLineCount;
+    private Integer thresholdReliabilityPercent;
+    private Integer collectionTimeShift;
 }
