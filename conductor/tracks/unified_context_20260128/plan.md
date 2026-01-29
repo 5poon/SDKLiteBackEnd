@@ -16,7 +16,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Full Context Loading logic' (Protocol in workflow.md)
 
 ## Phase 3: Bootstrap API
-- [x] Task: Implement Context Endpoint [commit: 437e53d]
+- [x] Task: Implement Context Endpoint [commit: 625ccc8]
     - [x] Add `GET /api/v1/metadata/context` to `MetadataController`.
     - [x] Write Integration Tests verifying the "Mega JSON" structure.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Bootstrap API' (Protocol in workflow.md)
