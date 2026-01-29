@@ -112,14 +112,10 @@ public class MetadataServiceImpl implements MetadataService {
     @Override
     public ProjectContextDTO getProjectContext(String username, String timestamp, String adaptorName) {
         ProjectContextDTO context = new ProjectContextDTO();
-        
-        // Context by default returns everything (depth 3)
         List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName, 3);
         context.setDataSources(dataSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-        
         List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName, 3);
         context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-        
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         try {
             List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
@@ -127,17 +123,54 @@ public class MetadataServiceImpl implements MetadataService {
             List<NeImportEntity> ne = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
             List<CounterImportEntity> ce = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
             List<AttrImportEntity> ae = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
-            
             context.setCounters(counters.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setAttributes(attributes.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setNeEntities(ne.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setCounterEntities(ce.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setAttrEntities(ae.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            
         } catch (IOException e) {
             throw new RuntimeException("Failed to assemble full context", e);
         }
-
         return context;
+    }
+
+    @Override
+    public List<CounterDef> getCountersByEntityId(String username, String timestamp, String adaptorName, String entityId) {
+        return getDataSourceHierarchy(username, timestamp, adaptorName, 3).stream()
+                .flatMap(ds -> ds.getCounterEntities().stream())
+                .filter(ce -> ce.getId().equals(entityId))
+                .findFirst()
+                .map(CounterImportEntity::getInternalCounters)
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<MocAttributeDef> getAttributesByEntityId(String username, String timestamp, String adaptorName, String entityId) {
+        return getDataSourceHierarchy(username, timestamp, adaptorName, 3).stream()
+                .flatMap(ds -> ds.getAttrEntities().stream())
+                .filter(ae -> ae.getId().equals(entityId))
+                .findFirst()
+                .map(AttrImportEntity::getInternalAttributes)
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Optional<CounterDef> getCounterById(String username, String timestamp, String adaptorName, String id) {
+        Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
+        try {
+            return parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile())).stream()
+                    .filter(c -> c.getId().equals(id))
+                    .findFirst();
+        } catch (IOException e) { throw new RuntimeException(e); }
+    }
+
+    @Override
+    public Optional<MocAttributeDef> getAttributeById(String username, String timestamp, String adaptorName, String id) {
+        Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
+        try {
+            return parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile())).stream()
+                    .filter(a -> a.getId().equals(id))
+                    .findFirst();
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 }
