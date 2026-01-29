@@ -1,10 +1,10 @@
 # Implementation Plan - Track: Unified Project Context API
 
 ## Phase 1: DTO Consolidation
-- [ ] Task: Create Unified DTOs
-    - [ ] Create `ProjectContextDTO`.
-    - [ ] Ensure all sub-DTOs (`CounterImportEntityDTO`, etc.) are defined.
-    - [ ] Update `MetadataMapper` to handle the top-level consolidation.
+- [x] Task: Create Unified DTOs
+    - [x] Create `ProjectContextDTO`.
+    - [x] Ensure all sub-DTOs (`CounterImportEntityDTO`, etc.) are defined.
+    - [x] Update `MetadataMapper` to handle the top-level consolidation.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: DTO Consolidation' (Protocol in workflow.md)
 
 ## Phase 2: Full Context Loading logic
