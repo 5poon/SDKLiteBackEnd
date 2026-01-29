@@ -83,26 +83,25 @@ public class MetadataServiceImpl implements MetadataService {
     public ProjectContextDTO getProjectContext(String username, String timestamp, String adaptorName) {
         ProjectContextDTO context = new ProjectContextDTO();
         
+        // 1. Load the nested hierarchy (DataSource -> Entities -> Data)
         List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName);
         context.setDataSources(dataSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
+        // 2. Load the MOC tree (recursive)
         List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName);
         context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
-        // Context DTO has flattened lists too for easy lookup
+        // 3. Populate flat lists for the top level of the DTO
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         try {
             List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
             List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
-            
-            context.setCounters(counters.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            context.setAttributes(attributes.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            
-            // Extract entities for flat lists
             List<NeImportEntity> ne = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
             List<CounterImportEntity> ce = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
             List<AttrImportEntity> ae = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
             
+            context.setCounters(counters.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            context.setAttributes(attributes.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setNeEntities(ne.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setCounterEntities(ce.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
             context.setAttrEntities(ae.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
