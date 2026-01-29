@@ -1,9 +1,15 @@
 package com.sdklite.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CounterDef {
     private String id;
     private String causeSetId;      // idf_counter_cause_set
@@ -21,10 +27,6 @@ public class CounterDef {
     private String bhType;
     private Integer integralType;
     
-    // Map to capture dynamic fields from CSV as fallback
     private Map<String, String> attributes;
-    
-    // Relationships
-    private String importEntityId; // Link to CounterImportEntity
-    private CounterImportEntity importEntity;
+    private String importEntityId; 
 }

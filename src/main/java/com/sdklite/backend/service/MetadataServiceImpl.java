@@ -44,8 +44,10 @@ public class MetadataServiceImpl implements MetadataService {
             List<NeImportEntity> neEntities = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
             List<CounterImportEntity> ceEntities = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
             List<AttrImportEntity> aeEntities = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
+            List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
+            List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
 
-            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities);
+            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities, counters, attributes);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load metadata hierarchy", e);
@@ -54,6 +56,7 @@ public class MetadataServiceImpl implements MetadataService {
 
     @Override
     public List<MocDef> getMocHierarchy(String username, String timestamp, String adaptorName) {
+        Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         Path nmlPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata/nml").resolve(adaptorName);
         
         try {
@@ -62,8 +65,14 @@ public class MetadataServiceImpl implements MetadataService {
             List<MocDef> mocs = parserService.parseMocs(new FileReader(nmlPath.resolve("moc_def_ref.txt").toFile()));
             List<MocDefParent> parents = parserService.parseMocParents(new FileReader(nmlPath.resolve("moc_def_parent_ref.txt").toFile()));
             List<VendorMocDef> vendorMocs = parserService.parseVendorMocs(new FileReader(nmlPath.resolve("vendor_moc_def_ref.txt").toFile()));
+            
+            List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
+            List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
+            List<ImportCounterFor> counterMappings = parserService.parseCounterMappings(new FileReader(metadataPath.resolve("import_counter_for_ref.txt").toFile()));
+            List<ImportAttrFor> attributeMappings = parserService.parseAttributeMappings(new FileReader(metadataPath.resolve("import_attr_for_ref.txt").toFile()));
+            List<CounterDefGran> granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
 
-            return mocHierarchyService.buildTree(mocs, parents, vendorMocs);
+            return mocHierarchyService.buildTree(mocs, parents, vendorMocs, counters, attributes, counterMappings, attributeMappings, granularities);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load MOC hierarchy", e);
@@ -72,43 +81,36 @@ public class MetadataServiceImpl implements MetadataService {
 
     @Override
     public ProjectContextDTO getProjectContext(String username, String timestamp, String adaptorName) {
-        Path baseMetadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
-        Path nmlMetadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata/nml").resolve(adaptorName);
-
+        ProjectContextDTO context = new ProjectContextDTO();
+        
+        List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName);
+        context.setDataSources(dataSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+        
+        List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName);
+        context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+        
+        // Context DTO has flattened lists too for easy lookup
+        Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         try {
-            ProjectContextDTO context = new ProjectContextDTO();
-
-            // Load Data Sources and Entities
-            List<ImportDataSource> rawSources = parserService.parseDataSources(new FileReader(baseMetadataPath.resolve("import_datasource_ref.txt").toFile()));
-            List<NeImportEntity> rawNe = parserService.parseNeEntities(new FileReader(baseMetadataPath.resolve("ne_import_entity_ref.txt").toFile()));
-            List<CounterImportEntity> rawCe = parserService.parseCounterEntities(new FileReader(baseMetadataPath.resolve("counter_import_entity_ref.txt").toFile()));
-            List<AttrImportEntity> rawAe = parserService.parseAttrEntities(new FileReader(baseMetadataPath.resolve("attr_import_entity_ref.txt").toFile()));
-
-            List<ImportDataSource> linkedSources = graphService.buildGraph(rawSources, rawNe, rawCe, rawAe);
-            context.setDataSources(linkedSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            context.setNeEntities(rawNe.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            context.setCounterEntities(rawCe.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            context.setAttrEntities(rawAe.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-
-            // Load MOCs
-            List<MocDef> rawMocs = parserService.parseMocs(new FileReader(nmlMetadataPath.resolve("moc_def_ref.txt").toFile()));
-            List<MocDefParent> rawParents = parserService.parseMocParents(new FileReader(nmlMetadataPath.resolve("moc_def_parent_ref.txt").toFile()));
-            List<VendorMocDef> rawVendorMocs = parserService.parseVendorMocs(new FileReader(nmlMetadataPath.resolve("vendor_moc_def_ref.txt").toFile()));
-
-            List<MocDef> mocTree = mocHierarchyService.buildTree(rawMocs, rawParents, rawVendorMocs);
-            context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-
-            // Load Global Counters and Attributes
-            List<CounterDef> rawCounters = parserService.parseCounters(new FileReader(baseMetadataPath.resolve("counter_def_ref.txt").toFile()));
-            List<MocAttributeDef> rawAttributes = parserService.parseAttributes(new FileReader(baseMetadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
-
-            context.setCounters(rawCounters.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-            context.setAttributes(rawAttributes.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
-
-            return context;
-
+            List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
+            List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
+            
+            context.setCounters(counters.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            context.setAttributes(attributes.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            
+            // Extract entities for flat lists
+            List<NeImportEntity> ne = parserService.parseNeEntities(new FileReader(metadataPath.resolve("ne_import_entity_ref.txt").toFile()));
+            List<CounterImportEntity> ce = parserService.parseCounterEntities(new FileReader(metadataPath.resolve("counter_import_entity_ref.txt").toFile()));
+            List<AttrImportEntity> ae = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
+            
+            context.setNeEntities(ne.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            context.setCounterEntities(ce.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            context.setAttrEntities(ae.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
+            
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load project context", e);
+            throw new RuntimeException("Failed to assemble full context", e);
         }
+
+        return context;
     }
 }

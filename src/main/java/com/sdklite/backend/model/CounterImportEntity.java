@@ -2,6 +2,9 @@ package com.sdklite.backend.model;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class CounterImportEntity {
     private String id;
@@ -16,4 +19,7 @@ public class CounterImportEntity {
     private Long lastImportLineCount;
     private Integer thresholdReliabilityPercent;
     private Integer collectionTimeShift;
+    
+    // Relationship
+    private List<CounterDef> internalCounters = new ArrayList<>();
 }

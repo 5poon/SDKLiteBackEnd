@@ -1,11 +1,14 @@
 package com.sdklite.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImportDataSource {
     private String id;
     private String name;
@@ -13,7 +16,6 @@ public class ImportDataSource {
     private String connectionString;
     private boolean isActive;
     
-    // Relationships
     private List<NeImportEntity> neEntities = new ArrayList<>();
     private List<CounterImportEntity> counterEntities = new ArrayList<>();
     private List<AttrImportEntity> attrEntities = new ArrayList<>();

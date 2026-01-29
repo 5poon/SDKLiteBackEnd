@@ -2,6 +2,9 @@ package com.sdklite.backend.model;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class AttrImportEntity {
     private String id;
@@ -15,4 +18,7 @@ public class AttrImportEntity {
     private String lastImportDate;
     private Long lastImportLineCount;
     private Integer thresholdReliabilityPercent;
+    
+    // Relationship
+    private List<MocAttributeDef> internalAttributes = new ArrayList<>();
 }

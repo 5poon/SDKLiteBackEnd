@@ -1,8 +1,6 @@
 package com.sdklite.backend.service;
 
-import com.sdklite.backend.model.MocDef;
-import com.sdklite.backend.model.MocDefParent;
-import com.sdklite.backend.model.VendorMocDef;
+import com.sdklite.backend.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,11 +12,22 @@ import java.util.stream.Collectors;
 @Service
 public class MocHierarchyService {
 
-    public List<MocDef> buildTree(List<MocDef> mocs, List<MocDefParent> parents, List<VendorMocDef> vendorMocs) {
+    public List<MocDef> buildTree(List<MocDef> mocs, 
+                                  List<MocDefParent> parents, 
+                                  List<VendorMocDef> vendorMocs,
+                                  List<CounterDef> counters,
+                                  List<MocAttributeDef> attributes,
+                                  List<ImportCounterFor> counterMappings,
+                                  List<ImportAttrFor> attributeMappings,
+                                  List<CounterDefGran> granularities) {
+        
         Map<String, MocDef> mocMap = mocs.stream()
                 .collect(Collectors.toMap(MocDef::getId, Function.identity()));
 
-        // Link Vendor MOCs
+        Map<String, VendorMocDef> vendorMocMap = vendorMocs.stream()
+                .collect(Collectors.toMap(VendorMocDef::getId, Function.identity()));
+
+        // Link Vendor MOCs to logical MOCs
         for (VendorMocDef vm : vendorMocs) {
             MocDef moc = mocMap.get(vm.getMocDefId());
             if (moc != null) {
@@ -26,7 +35,43 @@ public class MocHierarchyService {
             }
         }
 
-        // Build Tree
+        // Link Attributes to Vendor MOCs and logical MOCs
+        Map<String, MocAttributeDef> attrMap = attributes.stream()
+                .collect(Collectors.toMap(MocAttributeDef::getId, Function.identity()));
+        
+        for (ImportAttrFor mapping : attributeMappings) {
+            VendorMocDef vm = vendorMocMap.get(mapping.getVendorMocDefId());
+            MocAttributeDef attr = attrMap.get(mapping.getAttrImportId());
+            if (vm != null && attr != null) {
+                // Binding to logical MOC for easy tree navigation
+                MocDef moc = mocMap.get(vm.getMocDefId());
+                if (moc != null && !moc.getMocAttributeDefs().contains(attr)) {
+                    moc.getMocAttributeDefs().add(attr);
+                }
+            }
+        }
+
+        // Link Counters to logical MOCs
+        Map<String, CounterDef> counterMap = counters.stream()
+                .collect(Collectors.toMap(CounterDef::getId, Function.identity()));
+        Map<String, CounterDefGran> granMap = granularities.stream()
+                .collect(Collectors.toMap(CounterDefGran::getId, Function.identity()));
+
+        for (ImportCounterFor mapping : counterMappings) {
+            VendorMocDef vm = vendorMocMap.get(mapping.getVendorMocDefId());
+            CounterDefGran gran = granMap.get(mapping.getCounterDefGranId());
+            if (vm != null && gran != null) {
+                CounterDef counter = counterMap.get(gran.getCounterDefId());
+                if (counter != null) {
+                    MocDef moc = mocMap.get(vm.getMocDefId());
+                    if (moc != null && !moc.getCounters().contains(counter)) {
+                        moc.getCounters().add(counter);
+                    }
+                }
+            }
+        }
+
+        // Build Tree Structure
         List<MocDef> roots = new ArrayList<>();
         Map<String, String> childToParent = parents.stream()
                 .collect(Collectors.toMap(MocDefParent::getChildId, MocDefParent::getParentId, (a, b) -> a));

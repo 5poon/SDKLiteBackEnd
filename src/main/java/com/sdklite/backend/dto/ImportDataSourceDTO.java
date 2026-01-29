@@ -9,4 +9,6 @@ public class ImportDataSourceDTO {
     private String name;
     private boolean isActive;
     private List<NeImportEntityDTO> neEntities;
+    private List<CounterImportEntityDTO> counterEntities;
+    private List<AttrImportEntityDTO> attrEntities;
 }

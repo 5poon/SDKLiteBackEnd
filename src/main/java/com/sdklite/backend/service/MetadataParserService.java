@@ -19,4 +19,6 @@ public interface MetadataParserService {
     
     List<MocAttributeDef> parseAttributes(Reader reader) throws IOException;
     List<ImportAttrFor> parseAttributeMappings(Reader reader) throws IOException;
+    List<ImportCounterFor> parseCounterMappings(Reader reader) throws IOException;
+    List<CounterDefGran> parseCounterGranularities(Reader reader) throws IOException;
 }

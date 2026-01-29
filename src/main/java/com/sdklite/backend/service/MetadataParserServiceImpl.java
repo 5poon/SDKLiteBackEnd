@@ -224,4 +224,40 @@ public class MetadataParserServiceImpl implements MetadataParserService {
         }
         return list;
     }
+
+    @Override
+    public List<ImportCounterFor> parseCounterMappings(Reader reader) throws IOException {
+        List<ImportCounterFor> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                ImportCounterFor item = new ImportCounterFor();
+                item.setCounterDefGranId(record.isMapped("idf_counter_def_gran") ? record.get("idf_counter_def_gran") : null);
+                item.setVendorMocDefId(record.isMapped("idf_vendor_moc_def") ? record.get("idf_vendor_moc_def") : null);
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<CounterDefGran> parseCounterGranularities(Reader reader) throws IOException {
+        List<CounterDefGran> list = new ArrayList<>();
+        try (CSVParser parser = new CSVParser(reader, getFormat())) {
+            for (CSVRecord record : parser) {
+                CounterDefGran item = new CounterDefGran();
+                item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setCounterDefId(record.isMapped("idf_counter_def") ? record.get("idf_counter_def") : null);
+                item.setCounterImportEntityId(record.isMapped("idf_counter_import_entity") ? record.get("idf_counter_import_entity") : null);
+                item.setAggregationBeanClass(record.isMapped("aggregation_bean_class") ? record.get("aggregation_bean_class") : null);
+                item.setImportKey(record.isMapped("import_key") ? record.get("import_key") : null);
+                item.setImportPriority(record.isMapped("import_priority") ? parseInteger(record.get("import_priority")) : null);
+                item.setName(record.isMapped("name") ? record.get("name") : null);
+                item.setTimeGranularity(record.isMapped("time_granularity") ? record.get("time_granularity") : null);
+                item.setCollectionTimeGran(record.isMapped("collection_time_gran") ? record.get("collection_time_gran") : null);
+                item.setImportStatus(record.isMapped("import_status") ? parseInteger(record.get("import_status")) : null);
+                list.add(item);
+            }
+        }
+        return list;
+    }
 }

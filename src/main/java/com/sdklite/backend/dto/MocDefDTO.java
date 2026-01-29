@@ -14,5 +14,7 @@ public class MocDefDTO {
     private String iconFilename;
     private String rsComment;
     private Map<String, String> attributes;
+    private List<CounterDefDTO> counters;
+    private List<MocAttributeDefDTO> mocAttributes;
     private List<MocDefDTO> children;
 }
