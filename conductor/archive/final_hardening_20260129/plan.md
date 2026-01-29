@@ -1,26 +1,17 @@
 # Implementation Plan - Track: Final Integration & Production Hardening
 
 ## Phase 1: Enriched Data Hierarchy
-- [ ] Task: Update DTO Nesting
+- [x] Task: Update DTO Nesting [commit: deb2d2d]
     - [ ] Add `List<CounterDefDTO> counters` to `CounterImportEntityDTO`.
     - [ ] Add `List<MocAttributeDefDTO> attributes` to `AttrImportEntityDTO`.
     - [ ] Add `counters` and `attributes` lists to `MocDefDTO`.
-- [ ] Task: Implement Hierarchy Linker
-    - [ ] Update `MetadataGraphService` to link Counters/Attributes to their respective Entities.
-    - [ ] Update `MocHierarchyService` to bind Counters/Attributes to logical MOCs using mapping files (`import_*_for_ref.txt`).
-- [ ] Task: Update Context Loading
-    - [ ] Update `MetadataServiceImpl.getProjectContext` to return the fully nested structure.
+- [x] Task: Implement Hierarchy Linker [commit: 4e2a21f]
+- [x] Task: Update Context Loading [commit: 4e2a21f]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Enriched Data Hierarchy' (Protocol in workflow.md)
 
-## Phase 2: Global Error Handling & Validation
-- [ ] Task: Implement Global Error Handler
-    - [ ] Create `GlobalExceptionHandler` with `@RestControllerAdvice`.
-    - [ ] Define `ErrorResponse` DTO.
-    - [ ] Implement handlers for core application exceptions.
-- [ ] Task: Implement Request Validation
-    - [ ] Add `spring-boot-starter-validation` dependency.
-    - [ ] Add `@NotBlank` and `@NotNull` to CRUD DTOs.
-    - [ ] Add `@Valid` to controller methods.
+## Phase 2: Global Error Handling & Validation [checkpoint: df3c255]
+- [x] Task: Implement Global Error Handler
+- [x] Task: Implement Request Validation
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Global Error Handling & Validation' (Protocol in workflow.md)
 
 ## Phase 3: Final Verification & Code Quality
