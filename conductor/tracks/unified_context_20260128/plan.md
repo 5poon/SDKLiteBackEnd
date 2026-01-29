@@ -8,11 +8,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: DTO Consolidation' (Protocol in workflow.md)
 
 ## Phase 2: Full Context Loading logic
-- [ ] Task: Implement Unified Loading
-    - [ ] Update `MetadataService` with `getProjectContext(username, timestamp, adaptorName)` method.
-    - [ ] Implement orchestration logic to load all 10+ CSV files.
-    - [ ] Assemble the full hierarchy and tree.
-    - [ ] Write Unit Tests for full context assembly.
+- [x] Task: Implement Unified Loading [commit: 07aae57]
+    - [x] Update `MetadataService` with `getProjectContext(username, timestamp, adaptorName)` method.
+    - [x] Implement orchestration logic to load all 10+ CSV files.
+    - [x] Assemble the full hierarchy and tree.
+    - [x] Write Unit Tests for full context assembly.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Full Context Loading logic' (Protocol in workflow.md)
 
 ## Phase 3: Bootstrap API
