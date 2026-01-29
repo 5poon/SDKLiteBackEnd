@@ -27,6 +27,7 @@ public interface MetadataMapper {
     @Mapping(target = "attributes", source = "internalAttributes")
     AttrImportEntityDTO toDTO(AttrImportEntity entity);
 
+    @Mapping(target = "attributes", source = "attributes")
     MocAttributeDefDTO toDTO(MocAttributeDef entity);
     MocAttributeDef toEntity(MocAttributeDefDTO dto);
     
