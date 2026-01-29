@@ -7,6 +7,7 @@ import com.sdklite.backend.service.MetadataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class MetadataController {
     public List<CounterDefDTO> createCounter(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
-            @RequestBody CounterDefDTO counterDTO,
+            @Valid @RequestBody CounterDefDTO counterDTO,
             Principal principal) throws IOException {
         
         return metadataCrudService.createCounter(principal.getName(), timestamp, adaptorName, metadataMapper.toEntity(counterDTO))
@@ -86,7 +87,7 @@ public class MetadataController {
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
-            @RequestBody CounterDefDTO counterDTO,
+            @Valid @RequestBody CounterDefDTO counterDTO,
             Principal principal) throws IOException {
         
         return metadataCrudService.updateCounter(principal.getName(), timestamp, adaptorName, id, metadataMapper.toEntity(counterDTO))
@@ -110,7 +111,7 @@ public class MetadataController {
     public void createAttribute(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
-            @RequestBody MocAttributeDefDTO attributeDTO,
+            @Valid @RequestBody MocAttributeDefDTO attributeDTO,
             Principal principal) throws IOException {
         
         metadataCrudService.createAttribute(principal.getName(), timestamp, adaptorName, metadataMapper.toEntity(attributeDTO));
@@ -122,7 +123,7 @@ public class MetadataController {
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
             @PathVariable String id,
-            @RequestBody MocAttributeDefDTO attributeDTO,
+            @Valid @RequestBody MocAttributeDefDTO attributeDTO,
             Principal principal) throws IOException {
         
         metadataCrudService.updateAttribute(principal.getName(), timestamp, adaptorName, id, metadataMapper.toEntity(attributeDTO));
