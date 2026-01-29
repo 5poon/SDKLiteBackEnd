@@ -24,6 +24,10 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                 .build();
     }
 
+    private String toString(Object val) {
+        return val == null ? "" : val.toString();
+    }
+
     @Override
     public void serializeCounters(List<CounterDef> counters, Writer writer) throws IOException {
         if (counters == null || counters.isEmpty()) {
@@ -42,6 +46,14 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                         values.add(counter.getId());
                     } else if ("name".equalsIgnoreCase(header)) {
                         values.add(counter.getName());
+                    } else if ("formula".equalsIgnoreCase(header)) {
+                        values.add(counter.getFormula());
+                    } else if ("aggregate_type".equalsIgnoreCase(header)) {
+                        values.add(toString(counter.getAggregateType()));
+                    } else if ("integral_type".equalsIgnoreCase(header)) {
+                        values.add(toString(counter.getIntegralType()));
+                    } else if ("rs_comment".equalsIgnoreCase(header)) {
+                        values.add(counter.getRsComment());
                     } else {
                         values.add(attrs.get(header));
                     }
@@ -65,8 +77,18 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                 Map<String, String> attrs = moc.getAttributes();
                 List<String> values = new ArrayList<>();
                 for (String header : headers) {
-                    if ("idf_moc_def".equalsIgnoreCase(header)) {
+                    if ("id".equalsIgnoreCase(header)) {
                         values.add(moc.getId());
+                    } else if ("name".equalsIgnoreCase(header)) {
+                        values.add(moc.getName());
+                    } else if ("behaviour".equalsIgnoreCase(header)) {
+                        values.add(toString(moc.getBehaviour()));
+                    } else if ("flags".equalsIgnoreCase(header)) {
+                        values.add(toString(moc.getFlags()));
+                    } else if ("icon_filename".equalsIgnoreCase(header)) {
+                        values.add(moc.getIconFilename());
+                    } else if ("rs_comment".equalsIgnoreCase(header)) {
+                        values.add(moc.getRsComment());
                     } else {
                         values.add(attrs.get(header));
                     }
@@ -94,6 +116,18 @@ public class MetadataSerializerServiceImpl implements MetadataSerializerService 
                         values.add(attr.getId());
                     } else if ("name".equalsIgnoreCase(header)) {
                         values.add(attr.getName());
+                    } else if ("idf_mapped_attribute".equalsIgnoreCase(header)) {
+                        values.add(attr.getMappedAttributeId());
+                    } else if ("behaviour".equalsIgnoreCase(header)) {
+                        values.add(toString(attr.getBehaviour()));
+                    } else if ("flags".equalsIgnoreCase(header)) {
+                        values.add(toString(attr.getFlags()));
+                    } else if ("integral_type".equalsIgnoreCase(header)) {
+                        values.add(toString(attr.getIntegralType()));
+                    } else if ("ref_gsm".equalsIgnoreCase(header)) {
+                        values.add(attr.getRefGsm());
+                    } else if ("rs_comment".equalsIgnoreCase(header)) {
+                        values.add(attr.getRsComment());
                     } else {
                         values.add(attrs.get(header));
                     }

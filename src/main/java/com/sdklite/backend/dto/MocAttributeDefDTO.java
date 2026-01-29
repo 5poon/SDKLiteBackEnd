@@ -7,5 +7,10 @@ import java.util.Map;
 public class MocAttributeDefDTO {
     private String id;
     private String name;
+    private Integer behaviour;
+    private Integer flags;
+    private Integer integralType;
+    private String refGsm;
+    private String rsComment;
     private Map<String, String> attributes;
 }

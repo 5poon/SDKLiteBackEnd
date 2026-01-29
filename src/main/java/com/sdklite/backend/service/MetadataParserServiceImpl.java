@@ -25,6 +25,16 @@ public class MetadataParserServiceImpl implements MetadataParserService {
                 .build();
     }
 
+    private Integer parseInteger(String val) {
+        if (val == null || val.isEmpty()) return null;
+        try { return Integer.parseInt(val); } catch (NumberFormatException e) { return null; }
+    }
+
+    private Long parseLong(String val) {
+        if (val == null || val.isEmpty()) return null;
+        try { return Long.parseLong(val); } catch (NumberFormatException e) { return null; }
+    }
+
     @Override
     public List<CounterDef> parseCounters(Reader reader) throws IOException {
         List<CounterDef> counters = new ArrayList<>();
@@ -33,6 +43,10 @@ public class MetadataParserServiceImpl implements MetadataParserService {
                 CounterDef def = new CounterDef();
                 def.setId(record.isMapped("id") ? record.get("id") : null);
                 def.setName(record.isMapped("name") ? record.get("name") : null);
+                def.setFormula(record.isMapped("formula") ? record.get("formula") : null);
+                def.setAggregateType(record.isMapped("aggregate_type") ? parseInteger(record.get("aggregate_type")) : null);
+                def.setIntegralType(record.isMapped("integral_type") ? parseInteger(record.get("integral_type")) : null);
+                def.setRsComment(record.isMapped("rs_comment") ? record.get("rs_comment") : null);
                 
                 Map<String, String> attrs = new HashMap<>();
                 record.toMap().forEach(attrs::put);
@@ -50,7 +64,12 @@ public class MetadataParserServiceImpl implements MetadataParserService {
         try (CSVParser parser = new CSVParser(reader, getFormat())) {
             for (CSVRecord record : parser) {
                 MocDef def = new MocDef();
-                def.setId(record.isMapped("idf_moc_def") ? record.get("idf_moc_def") : null);
+                def.setId(record.isMapped("id") ? record.get("id") : null);
+                def.setName(record.isMapped("name") ? record.get("name") : null);
+                def.setBehaviour(record.isMapped("behaviour") ? parseInteger(record.get("behaviour")) : null);
+                def.setFlags(record.isMapped("flags") ? parseInteger(record.get("flags")) : null);
+                def.setIconFilename(record.isMapped("icon_filename") ? record.get("icon_filename") : null);
+                def.setRsComment(record.isMapped("rs_comment") ? record.get("rs_comment") : null);
                 
                 Map<String, String> attrs = new HashMap<>();
                 record.toMap().forEach(attrs::put);
@@ -90,6 +109,9 @@ public class MetadataParserServiceImpl implements MetadataParserService {
                 item.setEntityName(record.isMapped("entity_name") ? record.get("entity_name") : null);
                 item.setConnectionString(record.isMapped("connection_string") ? record.get("connection_string") : null);
                 item.setActive(record.isMapped("is_active") && "1".equals(record.get("is_active")));
+                item.setImportPriority(record.isMapped("import_priority") ? parseInteger(record.get("import_priority")) : null);
+                item.setLastImportDate(record.isMapped("last_import_date") ? record.get("last_import_date") : null);
+                item.setLastImportLineCount(record.isMapped("last_import_line_count") ? parseLong(record.get("last_import_line_count")) : null);
                 list.add(item);
             }
         }
@@ -155,6 +177,9 @@ public class MetadataParserServiceImpl implements MetadataParserService {
                 item.setMocDefId(record.isMapped("idf_moc_def") ? record.get("idf_moc_def") : null);
                 item.setVendorId(record.isMapped("idf_vendor") ? record.get("idf_vendor") : null);
                 item.setName(record.isMapped("name") ? record.get("name") : null);
+                item.setBehaviour(record.isMapped("behaviour") ? parseInteger(record.get("behaviour")) : null);
+                item.setIconFilename(record.isMapped("icon_filename") ? record.get("icon_filename") : null);
+                item.setRsComment(record.isMapped("rs_comment") ? record.get("rs_comment") : null);
                 list.add(item);
             }
         }
@@ -168,7 +193,13 @@ public class MetadataParserServiceImpl implements MetadataParserService {
             for (CSVRecord record : parser) {
                 MocAttributeDef item = new MocAttributeDef();
                 item.setId(record.isMapped("id") ? record.get("id") : null);
+                item.setMappedAttributeId(record.isMapped("idf_mapped_attribute") ? record.get("idf_mapped_attribute") : null);
+                item.setBehaviour(record.isMapped("behaviour") ? parseInteger(record.get("behaviour")) : null);
+                item.setFlags(record.isMapped("flags") ? parseInteger(record.get("flags")) : null);
+                item.setIntegralType(record.isMapped("integral_type") ? parseInteger(record.get("integral_type")) : null);
                 item.setName(record.isMapped("name") ? record.get("name") : null);
+                item.setRefGsm(record.isMapped("ref_gsm") ? record.get("ref_gsm") : null);
+                item.setRsComment(record.isMapped("rs_comment") ? record.get("rs_comment") : null);
                 
                 Map<String, String> attrs = new HashMap<>();
                 record.toMap().forEach(attrs::put);
