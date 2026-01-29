@@ -60,8 +60,73 @@ public class MetadataController {
                 .orElseThrow(() -> new IllegalArgumentException("DataSource not found: " + id));
     }
 
+    @GetMapping("/datasources/{id}/entities")
+    @Operation(summary = "Get Entities by DataSource", description = "Returns all entities associated with a specific DataSource.")
+    public ImportDataSourceDTO getDataSourceEntities(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        // Depth 2 gives DataSource + Entities
+        return metadataService.getDataSourceById(principal.getName(), timestamp, adaptorName, id, 2)
+                .map(metadataMapper::toDTO)
+                .orElseThrow(() -> new IllegalArgumentException("DataSource not found: " + id));
+    }
+
+    @GetMapping("/entities/{id}/counters")
+    @Operation(summary = "Get Counters by Entity", description = "Returns the list of specific counters belonging to the given Entity ID.")
+    public List<CounterDefDTO> getCountersByEntity(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        return metadataService.getCountersByEntityId(principal.getName(), timestamp, adaptorName, id).stream()
+                .map(metadataMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/entities/{id}/attributes")
+    @Operation(summary = "Get Attributes by Entity", description = "Returns the list of specific attributes belonging to the given Entity ID.")
+    public List<MocAttributeDefDTO> getAttributesByEntity(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        return metadataService.getAttributesByEntityId(principal.getName(), timestamp, adaptorName, id).stream()
+                .map(metadataMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/counters/{id}")
+    @Operation(summary = "Get Counter by ID", description = "Returns a single counter definition.")
+    public CounterDefDTO getCounterById(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        return metadataService.getCounterById(principal.getName(), timestamp, adaptorName, id)
+                .map(metadataMapper::toDTO)
+                .orElseThrow(() -> new IllegalArgumentException("Counter not found: " + id));
+    }
+
+    @GetMapping("/attributes/{id}")
+    @Operation(summary = "Get Attribute by ID", description = "Returns a single attribute definition.")
+    public MocAttributeDefDTO getAttributeById(
+            @PathVariable String id,
+            @RequestParam String timestamp,
+            @RequestParam String adaptorName,
+            Principal principal) {
+        
+        return metadataService.getAttributeById(principal.getName(), timestamp, adaptorName, id)
+                .map(metadataMapper::toDTO)
+                .orElseThrow(() -> new IllegalArgumentException("Attribute not found: " + id));
+    }
+
     @GetMapping("/mocs/tree")
-    @Operation(summary = "Get MOC Tree", description = "Returns the recursive hierarchy of Managed Object Classes (MOCs). Depth 3 includes counters/attributes.")
+    @Operation(summary = "Get MOC Tree", description = "Returns the recursive hierarchy of Managed Object Classes (MOCs).")
     public List<MocDefDTO> getMocHierarchy(
             @Parameter(description = "Session timestamp") @RequestParam String timestamp,
             @Parameter(description = "Adaptor folder name") @RequestParam String adaptorName,
