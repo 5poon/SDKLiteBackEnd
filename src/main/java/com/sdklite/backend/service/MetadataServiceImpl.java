@@ -46,8 +46,9 @@ public class MetadataServiceImpl implements MetadataService {
             List<AttrImportEntity> aeEntities = parserService.parseAttrEntities(new FileReader(metadataPath.resolve("attr_import_entity_ref.txt").toFile()));
             List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));
             List<MocAttributeDef> attributes = parserService.parseAttributes(new FileReader(metadataPath.resolve("moc_attribute_def_ref.txt").toFile()));
+            List<CounterDefGran> granularities = parserService.parseCounterGranularities(new FileReader(metadataPath.resolve("counter_def_gran_ref.txt").toFile()));
 
-            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities, counters, attributes);
+            return graphService.buildGraph(sources, neEntities, ceEntities, aeEntities, counters, attributes, granularities);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load metadata hierarchy", e);
@@ -83,15 +84,12 @@ public class MetadataServiceImpl implements MetadataService {
     public ProjectContextDTO getProjectContext(String username, String timestamp, String adaptorName) {
         ProjectContextDTO context = new ProjectContextDTO();
         
-        // 1. Load the nested hierarchy (DataSource -> Entities -> Data)
         List<ImportDataSource> dataSources = getDataSourceHierarchy(username, timestamp, adaptorName);
         context.setDataSources(dataSources.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
-        // 2. Load the MOC tree (recursive)
         List<MocDef> mocTree = getMocHierarchy(username, timestamp, adaptorName);
         context.setMocTree(mocTree.stream().map(metadataMapper::toDTO).collect(Collectors.toList()));
         
-        // 3. Populate flat lists for the top level of the DTO
         Path metadataPath = fileService.resolveUserTempPath(username, timestamp).resolve("config/metadata").resolve(adaptorName);
         try {
             List<CounterDef> counters = parserService.parseCounters(new FileReader(metadataPath.resolve("counter_def_ref.txt").toFile()));

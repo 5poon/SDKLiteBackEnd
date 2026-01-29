@@ -17,29 +17,30 @@ public class MetadataGraphService {
             List<CounterImportEntity> counterEntities,
             List<AttrImportEntity> attrEntities,
             List<CounterDef> counters,
-            List<MocAttributeDef> attributes) {
+            List<MocAttributeDef> attributes,
+            List<CounterDefGran> granularities) {
 
         // Index Data Sources
         Map<String, ImportDataSource> sourceMap = dataSources.stream()
                 .collect(Collectors.toMap(ImportDataSource::getId, Function.identity()));
 
-        // Link NE Entities
-        for (NeImportEntity ne : neEntities) {
-            ImportDataSource source = sourceMap.get(ne.getDataSourceId());
-            if (source != null) {
-                source.getNeEntities().add(ne);
-            }
-        }
-
         // Index Counter Entities
         Map<String, CounterImportEntity> ceMap = counterEntities.stream()
                 .collect(Collectors.toMap(CounterImportEntity::getId, Function.identity()));
 
-        // Link Counters to Entities
-        for (CounterDef counter : counters) {
-            CounterImportEntity ce = ceMap.get(counter.getImportEntityId());
-            if (ce != null) {
-                ce.getInternalCounters().add(counter); // Note: I need to add this list to the POJO
+        // Index Attribute Entities
+        Map<String, AttrImportEntity> aeMap = attrEntities.stream()
+                .collect(Collectors.toMap(AttrImportEntity::getId, Function.identity()));
+
+        // Index Counters
+        Map<String, CounterDef> counterMap = counters.stream()
+                .collect(Collectors.toMap(CounterDef::getId, Function.identity()));
+
+        // Link NE Entities to Sources
+        for (NeImportEntity ne : neEntities) {
+            ImportDataSource source = sourceMap.get(ne.getDataSourceId());
+            if (source != null) {
+                source.getNeEntities().add(ne);
             }
         }
 
@@ -51,23 +52,32 @@ public class MetadataGraphService {
             }
         }
 
-        // Index Attribute Entities
-        Map<String, AttrImportEntity> aeMap = attrEntities.stream()
-                .collect(Collectors.toMap(AttrImportEntity::getId, Function.identity()));
-
-        // Link Attributes to Entities
-        for (MocAttributeDef attr : attributes) {
-            AttrImportEntity ae = aeMap.get(attr.getMappedAttributeId()); // Re-using idf_mapped_attribute as link to AE
-            if (ae != null) {
-                ae.getInternalAttributes().add(attr); // Note: I need to add this list to the POJO
-            }
-        }
-
         // Link Attribute Entities to Sources
         for (AttrImportEntity ae : attrEntities) {
             ImportDataSource source = sourceMap.get(ae.getDataSourceId());
             if (source != null) {
                 source.getAttrEntities().add(ae);
+            }
+        }
+
+        // --- NEW LOGIC: Link Counters via Granularity bridge ---
+        for (CounterDefGran gran : granularities) {
+            CounterDef counter = counterMap.get(gran.getCounterDefId());
+            CounterImportEntity ce = ceMap.get(gran.getCounterImportEntityId());
+            if (counter != null && ce != null) {
+                if (!ce.getInternalCounters().contains(counter)) {
+                    ce.getInternalCounters().add(counter);
+                }
+            }
+        }
+
+        // --- NEW LOGIC: Link Attributes to Entities ---
+        for (MocAttributeDef attr : attributes) {
+            AttrImportEntity ae = aeMap.get(attr.getMappedAttributeId());
+            if (ae != null) {
+                if (!ae.getInternalAttributes().contains(attr)) {
+                    ae.getInternalAttributes().add(attr);
+                }
             }
         }
 
